@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtWidgets/QLabel>
+#include <QString>
 
 QT_BEGIN_NAMESPACE
 
@@ -17,12 +19,12 @@ class MainWindow: public QMainWindow
 Q_OBJECT
 
 public:
-
-MainWindow(QWidget *parent = nullptr);
-~MainWindow();
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+    void SetLable(QString LabelText);
 
 private:
 
-Ui::MainWindow *ui;
+    Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

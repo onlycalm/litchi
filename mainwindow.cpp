@@ -10,3 +10,10 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::SetLable(QString LabelText)
+{
+    ui->label->setText(LabelText);
+    ui->label->setGeometry(200, 50, 200, 50);
+    ui->label->setStyleSheet("background-color: yellow; color: green;");
+}
