@@ -1,14 +1,15 @@
-// main.cpp
 #include <QApplication>
-#include "mainwindow.h"
+#include "winMain.h"
+#include "log.h"
 
 int main(int argc, char *argv[])
 {
+    LogTr("Enter main function.");
+
     QApplication app(argc, argv);
 
-    MainWindow w;
+    winMain w;
     w.show();
-    w.SetLable("Yes");
 
     return app.exec();
 }
