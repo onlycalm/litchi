@@ -154,7 +154,7 @@ typedef union ByFld
         byte byB6 : 1u; //!<Bit6.
         byte byB7 : 1u; //!<Bit7.
     };
-}UByFld;
+} UnByFld;
 
 /**
  * @enum WdFld
@@ -184,7 +184,7 @@ typedef union WdFld
         byte byB14 : 1u; //!<Bit14.
         byte byB15 : 1u; //!<Bit15.
     };
-}UWdFld;
+} UnWdFld;
 
 /*****************************************************************************
  *函数声明                                                                   *

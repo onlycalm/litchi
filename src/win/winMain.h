@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets/QLabel>
 #include <QString>
+#include "tcp.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -25,5 +26,6 @@ public:
 
 private:
     Ui::winMain *ui;
+    cTcp Tcp;
 };
 #endif // WIN_MAIN_H

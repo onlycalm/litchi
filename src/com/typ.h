@@ -30,7 +30,7 @@ typedef uint64_t u64;
 typedef uint8_t byte;
 typedef uint16_t word;
 typedef uint32_t dword;
-typedef uint32_t dtc;
+typedef uint32_t Err;
 typedef char* pchar;
 
 /*****************************************************************************
@@ -58,9 +58,9 @@ typedef char* pchar;
 #define DWORD uint32_t
 #endif //DWORD
 
-#ifndef DTC
-#define DTC uint32_t
-#endif //DTC
+#ifndef ERR
+#define ERR uint32_t
+#endif //ERR
 
 #ifndef PCHAR
 #define PCHAR char*
