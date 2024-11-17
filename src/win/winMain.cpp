@@ -29,9 +29,31 @@ void winMain::vidInitUi(void)
 {
     LogTr("Enter vidInitUi function.");
 
-    Tcp.Lsn();
+    connect(ui->pshBtnConn, &QPushButton::clicked, this, &winMain::onConnBtnClk);
 
     LogTr("Exit vidInitUi function.");
+}
+
+void winMain::onConnBtnClk(void)
+{
+    LogTr("Enter winMain::onConnBtnClk function");
+
+    std::string strConn = ui->pshBtnConn->text().toStdString();
+
+    if(strConn == "Connect")
+    {
+        ui->pshBtnConn->setText("Disconnect");
+    }
+    else if(strConn == "Disconnect")
+    {
+        ui->pshBtnConn->setText("Connect");
+    }
+    else
+    {
+        LogErr("Button string display error.");
+    }
+
+    LogTr("Exit winMain::onConnBtnClk function");
 }
 
 #endif // WIN_MAIN_H

@@ -2,35 +2,64 @@
 #define TCP_H
 
 #include "typ.h"
+#include <sys/socket.h>
 
 #define RECV_BUF_SIZE 1024
 
-enum class enTcpBlkMd : uint8_t
+enum class enTcpBlkMd : int
 {
-    Blk,
-    NonBlk,
+    Blk = 0,
+    Pv = MSG_PEEK,
+    WaitFl = MSG_WAITALL, // Waiting for receiving bytes to be full.
+    NonBlk = MSG_DONTWAIT
 };
 
-class cTcp
+class cTcpSer
 {
 public:
-    cTcp(void);
-    cTcp(u32 u32SvrIpv4Adr, u32 u32CltIpv4Adr, u16 u16SvrPt);
-    ~cTcp(void);
-    Err SetBlkMd(enTcpBlkMd eTcpBlkMd);
-    void Lsn(void);
-    int GetRecvSz(void);
-    int Read(byte* abyDat);
-    void Send(byte* pbyMsg, u32 u32Size);
+    cTcpSer(void);
+    cTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    ~cTcpSer(void);
+    err SetBlkMd(enTcpBlkMd eTcpBlkMd);
+    enTcpBlkMd GetBlkMd(void);
+    err Lsn(void);
+    err Snd(u8* pu8Buf, u32 u32Sz);
+    err Recv(u8* pu8Buf, u32* u32Sz);
+    bool IsConn(void);
 
 private:
     byte byRecvBuf[RECV_BUF_SIZE] = {0};
     u8 u8AdrFm;
-    u16 u16SvrPt;
-    u32 u32SvrIpv4Adr;
-    u32 u32CltIpv4Adr;
-    s16 s16SvrSktId;
-    s16 s16CltSktId;
+    u16 u16LclPt;
+    u32 u32LclIpv4Adr;
+    u32 u32RmtIpv4Adr;
+    s16 s16LclSktId;
+    s16 s16RmtSktId;
+    enTcpBlkMd eTcpBlkMd;
+};
+
+class cTcpClt
+{
+public:
+    cTcpClt(void);
+    cTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    ~cTcpClt(void);
+    err SetBlkMd(enTcpBlkMd eTcpBlkMd);
+    enTcpBlkMd GetBlkMd(void);
+    err Conn(void);
+    err Snd(u8* pu8Buf, u32 u32Sz);
+    err Recv(u8* pu8Buf, u32* u32Sz);
+    bool IsConn(void);
+
+private:
+    byte byRecvBuf[RECV_BUF_SIZE] = {0};
+    u8 u8AdrFm;
+    u16 u16LclPt;
+    u32 u32LclIpv4Adr;
+    u32 u32RmtIpv4Adr;
+    s16 s16LclSktId;
+    s16 s16RmtSktId;
+    enTcpBlkMd eTcpBlkMd;
 };
 
 #endif // TCP_H

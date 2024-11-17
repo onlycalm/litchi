@@ -26,6 +26,9 @@ public:
 
 private:
     Ui::winMain *ui;
-    cTcp Tcp;
+    cTcpSer TcpSer;
+    cTcpClt TcpClt;
+
+    void onConnBtnClk(void);
 };
 #endif // WIN_MAIN_H
