@@ -10,27 +10,25 @@
 
 #ifdef TCP_H
 
-std::string HexArrayToString(const unsigned char* hexArray, size_t length)
+std::string HexToStr(const uint8_t* array, size_t length)
 {
     std::stringstream ss;
-    ss << std::hex << std::setw(2) << std::setfill('0') << std::uppercase;
-
     for(size_t i = 0; i < length; ++i)
     {
-        ss << static_cast<int>(hexArray[i]);
+        ss << std::setw(2) << std::setfill('0') << std::hex << std::uppercase << static_cast<int>(array[i]);
     }
 
     return ss.str();
 }
 
-cTcpSer::cTcpSer(void)
+clTcpSer::clTcpSer(void)
 {
-    LogTr("Enter cTcpSer::cTcpSer function.");
+    LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
     u16LclPt = htons(12345);
-    u32LclIpv4Adr = 0x0100007FU; /* 127.0.0.1 */
-    u32RmtIpv4Adr = 0x0100007FU; /* 127.0.0.1 */
+    u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
+    u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     s16LclSktId = -1;
     s16RmtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
@@ -41,14 +39,14 @@ cTcpSer::cTcpSer(void)
     LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
     LogInf("s16LclSktId = %d", s16LclSktId);
     LogInf("s16RmtSktId = %d", s16RmtSktId);
-    LogInf("eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
-    LogTr("Exit cTcpSer::cTcpSer function.");
+    LogTr("Exit clTcpSer::clTcpSer function.");
 }
 
-cTcpSer::cTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+clTcpSer::clTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
 {
-    LogTr("Enter cTcpSer::cTcpSer function.");
+    LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
     this->u16LclPt = u16LclPt;
@@ -64,44 +62,69 @@ cTcpSer::cTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
     LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
     LogInf("s16LclSktId = %d", s16LclSktId);
     LogInf("s16RmtSktId = %d", s16RmtSktId);
-    LogInf("eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
-    LogTr("Exit cTcpSer::cTcpSer function.");
+    LogTr("Exit clTcpSer::clTcpSer function.");
 }
 
-cTcpSer::~cTcpSer(void)
+clTcpSer::~clTcpSer(void)
 {
-    LogTr("Enter cTcpSer::~cTcpSer function.");
+    LogTr("Enter clTcpSer::~clTcpSer function.");
 
-    LogTr("Exit cTcpSer::~cTcpSer function.");
+    LogTr("Exit clTcpSer::~clTcpSer function.");
 }
 
-err cTcpSer::SetBlkMd(enTcpBlkMd eTcpBlkMd)
+err clTcpSer::erSetBlkMd(enTcpBlkMd eTcpBlkMd)
 {
-    LogTr("Enter cTcpSer::SetBlkMd function.");
+    LogTr("Enter clTcpSer::erSetBlkMd function.");
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     err erRtn = EC_NOK;
 
     this->eTcpBlkMd = eTcpBlkMd;
-    LogInf("this->eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("this->eTcpBlkMd = %d", (int)this->eTcpBlkMd);
 
     return erRtn;
 
-    LogTr("Exit cTcpSer::SetBlkMd function.");
+    LogTr("Exit clTcpSer::erSetBlkMd function.");
 }
 
-enTcpBlkMd cTcpSer::GetBlkMd(void)
+err clTcpSer::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
 {
-    LogTr("Enter cTcpSer::GetBlkMd function.");
+    LogTr("Enter clTcpSer::erSetNetParm function.");
+
+    err erRtn = EC_NOK;
+
+    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
+    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
+    LogInf("u16LclPt = 0x%08X", u16LclPt);
+
+    this->u16LclPt = u16LclPt;
+    this->u32LclIpv4Adr = u32LclIpv4Adr;
+    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
+    erRtn = EC_OK;
+
+    LogInf("this->u16LclPt = 0x%08X", this->u16LclPt);
+    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+
+    LogTr("Exit clTcpSer::erSetNetParm function.");
+
+    return erRtn;
+}
+
+enTcpBlkMd clTcpSer::eGetBlkMd(void)
+{
+    LogTr("Enter clTcpSer::eGetBlkMd function.");
 
     return eTcpBlkMd;
 
-    LogTr("Exit cTcpSer::GetBlkMd function.");
+    LogTr("Exit clTcpSer::eGetBlkMd function.");
 }
 
-err cTcpSer::Lsn(void)
+err clTcpSer::erLsn(void)
 {
-    LogTr("Enter cTcpSer::Lsn function.");
+    LogTr("Enter clTcpSer::erLsn function.");
 
     err erRtn = EC_OK;
 
@@ -180,35 +203,57 @@ err cTcpSer::Lsn(void)
         }
     }
 
-    LogTr("Exit cTcpSer::Lsn function.");
-}
-
-err cTcpSer::Snd(u8* pu8Buf, u32 u32Sz)
-{
-    LogTr("Enter cTcpSer::Snd function.");
-
-    err erRtn = EC_NOK;
-
-    if((pu8Buf != NULL) && (u32Sz > 0U))
-    {
-        LogInf("Send data: 0x%s", HexArrayToString(pu8Buf, u32Sz).c_str());
-
-        send(s16RmtSktId, pu8Buf, u32Sz, 0);
-        erRtn = EC_OK;
-    }
-    else
-    {
-        erRtn = EC_NOK;
-    }
-
-    LogTr("Exit cTcpSer::Snd function.");
+    LogTr("Exit clTcpSer::erLsn function.");
 
     return erRtn;
 }
 
-err cTcpSer::Recv(u8* pu8Buf, u32* pu32Sz)
+err clTcpSer::erDisc(void)
 {
-    LogTr("Enter cTcpSer::Recv function.");
+    LogTr("Enter clTcpSer::erDisc function.");
+
+    err erRtn = EC_NOK;
+
+    shutdown(s16LclSktId, SHUT_RDWR);
+    close(s16LclSktId);
+    erRtn = EC_OK;
+
+    LogTr("Exit clTcpSer::erDisc function.");
+
+    return erRtn;
+}
+
+err clTcpSer::erSnd(u8* pu8Buf, u32 u32Sz)
+{
+    LogTr("Enter clTcpSer::erSnd function.");
+
+    err erRtn = EC_NOK;
+
+    if((pu8Buf != NULL) &&
+       (u32Sz > 0u) &&
+       (bIsConn() == true))
+    {
+        LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
+
+        send(s16RmtSktId, pu8Buf, u32Sz, 0);
+        LogScs("TCP successfully sent.");
+        erRtn = EC_OK;
+    }
+    else
+    {
+        LogErr("TCP failed to send.");
+
+        erRtn = EC_NOK;
+    }
+
+    LogTr("Exit clTcpSer::erSnd function.");
+
+    return erRtn;
+}
+
+err clTcpSer::erRecv(u8* pu8Buf, u32* pu32Sz)
+{
+    LogTr("Enter clTcpSer::erRecv function.");
 
     err erRtn = EC_NOK;
 
@@ -218,14 +263,14 @@ err cTcpSer::Recv(u8* pu8Buf, u32* pu32Sz)
 
         if(s64RecvRst > 0)
         {
-            LogInf("Recv data: 0x%s", HexArrayToString(pu8Buf, s64RecvRst).c_str());
+            LogInf("Recv data: 0x%s", HexToStr(pu8Buf, s64RecvRst).c_str());
 
             *pu32Sz = s64RecvRst;
             erRtn = EC_OK;
         }
         else if(s64RecvRst == 0)
         {
-            *pu32Sz = 0U;
+            *pu32Sz = 0u;
             erRtn = EC_NOK;
             LogWrn("Recv disconnected.");
         }
@@ -234,38 +279,38 @@ err cTcpSer::Recv(u8* pu8Buf, u32* pu32Sz)
             if((errno == EAGAIN) || (errno == EWOULDBLOCK))
             {
                 // Receive buffer is empty.
-                *pu32Sz = 0U;
+                *pu32Sz = 0u;
                 erRtn = EC_OK;
             }
             else
             {
-                *pu32Sz = 0U;
+                *pu32Sz = 0u;
                 erRtn = EC_NOK;
                 LogErr("Recv failed 0x%08X.", errno);
             }
         }
         else
         {
-            *pu32Sz = 0U;
+            *pu32Sz = 0u;
             erRtn = EC_NOK;
             LogErr("Recv failed.");
         }
     }
     else
     {
-        *pu32Sz = 0U;
+        *pu32Sz = 0u;
         erRtn = EC_NOK;
         LogErr("NULL point.");
     }
 
-    LogTr("Exit cTcpSer::Recv function.");
+    LogTr("Exit clTcpSer::erRecv function.");
 
     return erRtn;
 }
 
-bool cTcpSer::IsConn(void)
+bool clTcpSer::bIsConn(void)
 {
-    LogTr("Enter cTcpSer::IsConn function.");
+    LogTr("Enter clTcpSer::bIsConn function.");
 
     bool bConn = false;
     u8 au8Buf[1] = {0};
@@ -281,19 +326,19 @@ bool cTcpSer::IsConn(void)
         bConn = false;
     }
 
-    LogTr("Exit cTcpSer::IsConn function.");
+    LogTr("Exit clTcpSer::bIsConn function.");
 
     return bConn;
 }
 
-cTcpClt::cTcpClt(void)
+clTcpClt::clTcpClt(void)
 {
-    LogTr("Enter cTcpClt::cTcpClt function.");
+    LogTr("Enter clTcpClt::clTcpClt function.");
 
     u8AdrFm = AF_INET; // IPV4.
     u16LclPt = htons(12345);
-    u32LclIpv4Adr = 0x0100007FU; /* 127.0.0.1 */
-    u32RmtIpv4Adr = 0x0100007FU; /* 127.0.0.1 */
+    u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
+    u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     s16LclSktId = -1;
     s16RmtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
@@ -304,14 +349,14 @@ cTcpClt::cTcpClt(void)
     LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
     LogInf("s16LclSktId = %d", s16LclSktId);
     LogInf("s16RmtSktId = %d", s16RmtSktId);
-    LogInf("eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
-    LogTr("Exit cTcpClt::cTcpClt function.");
+    LogTr("Exit clTcpClt::clTcpClt function.");
 }
 
-cTcpClt::cTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+clTcpClt::clTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
 {
-    LogTr("Enter cTcpSer::cTcpSer function.");
+    LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
     this->u16LclPt = u16LclPt;
@@ -327,44 +372,69 @@ cTcpClt::cTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
     LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
     LogInf("s16LclSktId = %d", s16LclSktId);
     LogInf("s16RmtSktId = %d", s16RmtSktId);
-    LogInf("eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
-    LogTr("Exit cTcpSer::cTcpSer function.");
+    LogTr("Exit clTcpSer::clTcpSer function.");
 }
 
-cTcpClt::~cTcpClt(void)
+clTcpClt::~clTcpClt(void)
 {
-    LogTr("Enter cTcpClt::~cTcpClt function.");
+    LogTr("Enter clTcpClt::~clTcpClt function.");
 
-    LogTr("Exit cTcpClt::~cTcpClt function.");
+    LogTr("Exit clTcpClt::~clTcpClt function.");
 }
 
-err cTcpClt::SetBlkMd(enTcpBlkMd eTcpBlkMd)
+err clTcpClt::erSetBlkMd(enTcpBlkMd eTcpBlkMd)
 {
-    LogTr("Enter cTcpClt::SetBlkMd function.");
+    LogTr("Enter clTcpClt::erSetBlkMd function.");
+    LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     err erRtn = EC_NOK;
 
     this->eTcpBlkMd = eTcpBlkMd;
-    LogInf("this->eTcpBlkMd = %d", eTcpBlkMd);
+    LogInf("this->eTcpBlkMd = %d", (int)this->eTcpBlkMd);
 
     return erRtn;
 
-    LogTr("Exit cTcpClt::SetBlkMd function.");
+    LogTr("Exit clTcpClt::erSetBlkMd function.");
 }
 
-enTcpBlkMd cTcpClt::GetBlkMd(void)
+err clTcpClt::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
 {
-    LogTr("Enter cTcpClt::GetBlkMd function.");
+    LogTr("Enter clTcpClt::erSetNetParm function.");
+
+    err erRtn = EC_NOK;
+
+    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
+    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
+    LogInf("u16LclPt = 0x%08X", u16LclPt);
+
+    this->u16LclPt = u16LclPt;
+    this->u32LclIpv4Adr = u32LclIpv4Adr;
+    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
+    erRtn = EC_OK;
+
+    LogInf("this->u16LclPt = 0x%08X", this->u16LclPt);
+    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+
+    LogTr("Exit clTcpClt::erSetNetParm function.");
+
+    return erRtn;
+}
+
+enTcpBlkMd clTcpClt::eGetBlkMd(void)
+{
+    LogTr("Enter clTcpClt::eGetBlkMd function.");
 
     return eTcpBlkMd;
 
-    LogTr("Exit cTcpClt::GetBlkMd function.");
+    LogTr("Exit clTcpClt::eGetBlkMd function.");
 }
 
-err cTcpClt::Conn(void)
+err clTcpClt::erConn(void)
 {
-    LogTr("Enter cTcpClt::Conn function.");
+    LogTr("Enter clTcpClt::erConn function.");
 
     err erRtn = EC_OK;
 
@@ -403,37 +473,58 @@ err cTcpClt::Conn(void)
         }
     }
 
-    LogTr("Exit cTcpClt::Conn function.");
+    LogTr("Exit clTcpClt::erConn function.");
 
     return erRtn;
 }
 
-err cTcpClt::Snd(u8* pu8Buf, u32 u32Sz)
+err clTcpClt::erDisc(void)
 {
-    LogTr("Enter cTcpClt::Snd function.");
+    LogTr("Enter clTcpClt::erDisc function.");
 
     err erRtn = EC_NOK;
 
-    if((pu8Buf != NULL) && (u32Sz > 0U))
+    shutdown(s16LclSktId, SHUT_RDWR);
+    close(s16LclSktId);
+    erRtn = EC_OK;
+
+    LogTr("Exit clTcpClt::erDisc function.");
+
+    return erRtn;
+}
+
+err clTcpClt::erSnd(u8* pu8Buf, u32 u32Sz)
+{
+    LogTr("Enter clTcpClt::erSnd function.");
+
+    err erRtn = EC_NOK;
+
+    if((pu8Buf != NULL) &&
+       (u32Sz > 0u) &&
+       (bIsConn() == true))
     {
-        LogInf("Send data: 0x%s", HexArrayToString(pu8Buf, u32Sz).c_str());
+        LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
 
         send(s16LclSktId, pu8Buf, u32Sz, 0);
+        LogScs("TCP successfully sent.");
         erRtn = EC_OK;
     }
     else
     {
+        LogErr("TCP failed to send.");
+
         erRtn = EC_NOK;
     }
 
-    LogTr("Exit cTcpClt::Snd function.");
+    LogInf("clTcpClt::erSnd return err 0x%08X.", erRtn);
+    LogTr("Exit clTcpClt::erSnd function.");
 
     return erRtn;
 }
 
-err cTcpClt::Recv(u8* pu8Buf, u32* pu32Sz)
+err clTcpClt::erRecv(u8* pu8Buf, u32* pu32Sz)
 {
-    LogTr("Enter cTcpClt::Recv function.");
+    LogTr("Enter clTcpClt::erRecv function.");
 
     err erRtn = EC_NOK;
 
@@ -443,14 +534,14 @@ err cTcpClt::Recv(u8* pu8Buf, u32* pu32Sz)
 
         if(s64RecvRst > 0)
         {
-            LogInf("Recv data: 0x%s", HexArrayToString(pu8Buf, s64RecvRst).c_str());
+            LogInf("Recv data: 0x%s", HexToStr(pu8Buf, s64RecvRst).c_str());
 
             *pu32Sz = s64RecvRst;
             erRtn = EC_OK;
         }
         else if(s64RecvRst == 0)
         {
-            *pu32Sz = 0U;
+            *pu32Sz = 0u;
             erRtn = EC_NOK;
             LogWrn("Recv disconnected.");
         }
@@ -459,96 +550,115 @@ err cTcpClt::Recv(u8* pu8Buf, u32* pu32Sz)
             if((errno == EAGAIN) || (errno == EWOULDBLOCK))
             {
                 // Receive buffer is empty.
-                *pu32Sz = 0U;
+                *pu32Sz = 0u;
                 erRtn = EC_OK;
             }
             else
             {
-                *pu32Sz = 0U;
+                *pu32Sz = 0u;
                 erRtn = EC_NOK;
                 LogErr("Recv failed.");
             }
         }
         else
         {
-            *pu32Sz = 0U;
+            *pu32Sz = 0u;
             erRtn = EC_NOK;
             LogErr("Recv failed.");
         }
     }
     else
     {
-        *pu32Sz = 0U;
+        *pu32Sz = 0u;
         erRtn = EC_NOK;
         LogErr("NULL point.");
     }
 
-    LogTr("Exit cTcpClt::Recv function.");
+    LogTr("Exit clTcpClt::erRecv function.");
 
     return erRtn;
 }
 
-bool cTcpClt::IsConn(void)
+bool clTcpClt::bIsConn(void)
 {
-    LogTr("Enter cTcpClt::IsConn function.");
+    LogTr("Enter clTcpClt::bIsConn function.");
 
     bool bConn = false;
     u8 au8Buf[1] = {0};
 
-    ssize_t s64RecvRst = recv(s16RmtSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv));
+    ssize_t s64RecvRst = recv(s16LclSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv) | static_cast<int>(enTcpBlkMd::NonBlk));
+    LogInf("recv return s64 %d", (int)s64RecvRst);
 
-    if(s64RecvRst != 0)
+    if(s64RecvRst > 0)
     {
         bConn = true;
     }
+    else if(s64RecvRst == 0)
+    {
+        LogTr("The other party disconnects.");
+
+        bConn = false; // The other party disconnects.
+    }
     else
     {
-        bConn = false;
+        LogInf("errno = 0x%08X", errno);
+
+        if((errno == ENOTCONN) || (errno == EBADF))
+        {
+            LogTr("Not connected.");
+
+            bConn = false;
+        }
+        else
+        {
+            bConn = true;
+        }
     }
 
-    LogTr("Exit cTcpClt::IsConn function.");
+    LogInf("clTcpClt::bIsConn return bool 0x%02X", bConn);
+    LogTr("Exit clTcpClt::bIsConn function.");
 
     return bConn;
 }
 
 // Tcp server.
-// TcpSer.Lsn();
-// TcpSer.SetBlkMd(enTcpBlkMd::NonBlk);
-// u8 au8Buf[1024] = {0U};
+// cTcpSer.erLsn();
+// cTcpSer.erSetBlkMd(enTcpBlkMd::NonBlk);
+// u8 au8Buf[1024] = {0u};
 // u32 u32RecvSz = 0;
 //
 // do
 // {
-//     TcpSer.Recv(au8Buf, &u32RecvSz);
+//     cTcpSer.erRecv(au8Buf, &u32RecvSz);
 //
 //     if(u32RecvSz > 0)
 //     {
 //         au8Buf[0] = 0x11;
 //         au8Buf[1] = 0x22;
 //         u32RecvSz = 2;
-//         TcpSer.Snd(au8Buf, u32RecvSz);
+//         cTcpSer.erSnd(au8Buf, u32RecvSz);
 //     }
-// } while(TcpSer.IsConn() == true);
+// } while(cTcpSer.bIsConn() == true);
 
 // Tcp client.
-// TcpClt.Conn();
-// TcpClt.SetBlkMd(enTcpBlkMd::NonBlk);
-// u8 au8Buf[1024] = {0U};
+// cTcpClt.erConn();
+// cTcpClt.erSetBlkMd(enTcpBlkMd::NonBlk);
+// u8 au8Buf[1024] = {0u};
 // u32 u32RecvSz = 0;
-// au8Buf[0] = 0x55U;
-// au8Buf[1] = 0xAAU;
-// TcpClt.Snd(au8Buf, 2);
+// au8Buf[0] = 0x55u;
+// au8Buf[1] = 0xAAu;
+// cTcpClt.erSnd(au8Buf, 2);
 //
 // do
 // {
-//     TcpClt.Recv(au8Buf, &u32RecvSz);
+//     cTcpClt.erRecv(au8Buf, &u32RecvSz);
 //
 //     if(u32RecvSz > 0)
 //     {
-//         au8Buf[0] = 0x55U;
-//         au8Buf[1] = 0xAAU;
-//         TcpClt.Snd(au8Buf, 2);
+//         au8Buf[0] = 0x55u;
+//         au8Buf[1] = 0xAAu;
+//         cTcpClt.erSnd(au8Buf, 2);
 //     }
-// } while(TcpClt.IsConn() == true);
+// } while(cTcpClt.bIsConn() == true);
 
 #endif // TCP_H

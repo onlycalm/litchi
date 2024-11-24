@@ -15,21 +15,27 @@ include_directories(
     ./src
     ./src/com
     ./src/log
-    ./src/drv
+    ./src/drv/tcp
+    ./src/drv/doip
+    ./src/drv/uds
     ./src/win
 )
 
 aux_source_directory(./src SRC_SOURCES)
 aux_source_directory(./src/com COM_SOURCES)
 aux_source_directory(./src/log LOG_SOURCES)
-aux_source_directory(./src/drv DRV_SOURCES)
+aux_source_directory(./src/drv/tcp TCP_SOURCES)
+aux_source_directory(./src/drv/doip DOIP_SOURCES)
+aux_source_directory(./src/drv/uds UDS_SOURCES)
 aux_source_directory(./src/win WIN_SOURCES)
 
 set(SRC_LIST
     ${SRC_SOURCES}
     ${COM_SOURCES}
     ${LOG_SOURCES}
-    ${DRV_SOURCES}
+    ${TCP_SOURCES}
+    ${DOIP_SOURCES}
+    ${UDS_SOURCES}
     ${WIN_SOURCES}
 )
 

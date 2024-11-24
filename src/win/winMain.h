@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QtWidgets/QLabel>
 #include <QString>
-#include "tcp.h"
+#include "doip.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -23,12 +23,13 @@ public:
     winMain(QWidget *parent = nullptr);
     ~winMain(void);
     void vidInitUi(void);
+    void vidInitConn(void);
 
 private:
     Ui::winMain *ui;
-    cTcpSer TcpSer;
-    cTcpClt TcpClt;
+    clDoipClt cDoipClt;
 
-    void onConnBtnClk(void);
+    void vidConnBtnClk(void);
+    void vidSndBtnClk(void);
 };
 #endif // WIN_MAIN_H

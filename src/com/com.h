@@ -197,6 +197,8 @@ extern char* GetFileNm(const char* const cpPath);
 extern BOOL CmpBy(const byte* const cpbyDat1, const byte* const cpbyDat2, const word cwAmt);
 extern BOOL CmpWd(const word* const cpwDat1, const word* const cpwDat2, const word cwAmt);
 extern BOOL CmpDwd(const dword* const cpdwDat1, const dword* const cpdwDat2, const word cwAmt);
+extern u16 u16CvtEndn(const u16 ku16Dat);
+extern u32 u32CvtEndn(const u32 ku32Dat);
 
 #ifdef __cplusplus
 }

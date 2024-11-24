@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "com.h"
+#include "typ.h"
 
 #ifdef COM_H
 
@@ -141,6 +142,19 @@ BOOL CmpDwd(const dword* const cpdwDat1, const dword* const cpdwDat2, const word
     }
 
     return bEq;
+}
+
+u16 u16CvtEndn(const u16 ku16Dat)
+{
+    return ((ku16Dat >> 8U) & 0x00FFU) | ((ku16Dat << 8U) & 0xFF00U);
+}
+
+u32 u32CvtEndn(const u32 ku32Dat)
+{
+    return ((ku32Dat >> 24U) & 0x000000FFU) |
+           ((ku32Dat >> 8U) & 0x0000FF00U) |
+           ((ku32Dat << 8U) & 0x00FF0000U) |
+           ((ku32Dat << 24U) & 0xFF000000U);
 }
 
 #ifdef __cplusplus
