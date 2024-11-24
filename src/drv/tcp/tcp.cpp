@@ -27,6 +27,7 @@ clTcpSer::clTcpSer(void)
 
     u8AdrFm = AF_INET; // IPV4.
     u16LclPt = htons(12345);
+    u16RmtPt = htons(12346);
     u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     s16LclSktId = -1;
@@ -336,7 +337,8 @@ clTcpClt::clTcpClt(void)
     LogTr("Enter clTcpClt::clTcpClt function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    u16LclPt = htons(12345);
+    u16LclPt = htons(12346);
+    u16RmtPt = htons(12345);
     u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
     s16LclSktId = -1;
@@ -399,7 +401,7 @@ err clTcpClt::erSetBlkMd(enTcpBlkMd eTcpBlkMd)
     LogTr("Exit clTcpClt::erSetBlkMd function.");
 }
 
-err clTcpClt::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+err clTcpClt::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16RmtPt, u16 u16LclPt)
 {
     LogTr("Enter clTcpClt::erSetNetParm function.");
 
@@ -407,14 +409,17 @@ err clTcpClt::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
 
     LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
     LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("u16LclPt = 0x%08X", u16LclPt);
+    LogInf("u16RmtPt = 0x%04X", u16RmtPt);
+    LogInf("u16LclPt = 0x%04X", u16LclPt);
 
-    this->u16LclPt = u16LclPt;
     this->u32LclIpv4Adr = u32LclIpv4Adr;
     this->u32RmtIpv4Adr = u32RmtIpv4Adr;
+    this->u16RmtPt = u16RmtPt;
+    this->u16LclPt = u16LclPt;
     erRtn = EC_OK;
 
-    LogInf("this->u16LclPt = 0x%08X", this->u16LclPt);
+    LogInf("this->u16RmtPt = 0x%04X", this->u16RmtPt);
+    LogInf("this->u16LclPt = 0x%04X", this->u16LclPt);
     LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
     LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
 
@@ -454,22 +459,61 @@ err clTcpClt::erConn(void)
 
     if(erRtn == EC_OK)
     {
-        // Config IP address.
+        int Enable = 1;
+
+        // Allow immediate reconnection.
+        if(setsockopt(s16LclSktId, SOL_SOCKET, SO_REUSEADDR, &Enable, sizeof(int)) >= 0)
+        {
+            LogScs("SO_REUSEADDR configuration successful.");
+        }
+        else
+        {
+            LogScs("SO_REUSEADDR configuration failed.");
+        }
+    }
+
+    if(erRtn == EC_OK)
+    {
+        // Bind IP.
         struct sockaddr_in tLclAdr = {0};
 
         tLclAdr.sin_family = u8AdrFm;
         tLclAdr.sin_addr.s_addr = u32LclIpv4Adr;
         tLclAdr.sin_port = u16LclPt;
 
-        if(connect(s16LclSktId, (struct sockaddr*)&tLclAdr, sizeof(tLclAdr)) >= 0)
+        if(bind(s16LclSktId, (struct sockaddr*)&tLclAdr, sizeof(tLclAdr)) >= 0)
+        {
+            LogScs("Local IP binding successful.");
+        }
+        else
+        {
+            LogErr("Local IP binding failed.");
+            LogInf("errno = 0x%08X", errno);
+
+            close(s16LclSktId);
+            erRtn = EC_NOK;
+        }
+    }
+
+    if(erRtn == EC_OK)
+    {
+        // Config IP address.
+        struct sockaddr_in tRmtAdr = {0};
+
+        tRmtAdr.sin_family = u8AdrFm;
+        tRmtAdr.sin_addr.s_addr = u32LclIpv4Adr;
+        tRmtAdr.sin_port = u16RmtPt;
+
+        if(connect(s16LclSktId, (struct sockaddr*)&tRmtAdr, sizeof(tRmtAdr)) >= 0)
         {
             LogScs("Connected successfully.");
         }
         else
         {
+            LogErr("Connection Failed.");
+
             close(s16LclSktId);
             erRtn = EC_NOK;
-            LogErr("Connection Failed.");
         }
     }
 

@@ -33,6 +33,7 @@ private:
     u8 u8RecvBuf[RECV_BUF_SIZE] = {0};
     u8 u8AdrFm;
     u16 u16LclPt;
+    u16 u16RmtPt;
     u32 u32LclIpv4Adr;
     u32 u32RmtIpv4Adr;
     s16 s16LclSktId;
@@ -47,7 +48,7 @@ public:
     clTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
     ~clTcpClt(void);
     err erSetBlkMd(enTcpBlkMd eTcpBlkMd);
-    err erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    err erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16RmtPt, u16 u16LclPt);
     enTcpBlkMd eGetBlkMd(void);
     err erConn(void);
     err erDisc(void);
@@ -59,6 +60,7 @@ private:
     u8 u8RecvBuf[RECV_BUF_SIZE] = {0};
     u8 u8AdrFm;
     u16 u16LclPt;
+    u16 u16RmtPt;
     u32 u32LclIpv4Adr;
     u32 u32RmtIpv4Adr;
     s16 s16LclSktId;

@@ -54,7 +54,7 @@ err clDoipSer::erRespVehId(void)
     LogInf("tHdr.u8InvProtVer = 0x%02X", tHdr.u8InvProtVer);
     tHdr.u16PldTyp = u16CvtEndn(static_cast<u16>(enPldTyp::VehIdRespMsg));
     LogInf("tHdr.u16PldTyp = 0x%04X", tHdr.u16PldTyp);
-    tHdr.u32PldLen = u32CvtEndn(sizeof(tHdr) + sizeof(tVehIdRespMsg));
+    tHdr.u32PldLen = u32CvtEndn((u32)sizeof(tVehIdRespMsg));
     LogInf("tHdr.u32PldLen = 0x%08X", tHdr.u32PldLen);
     tPkt.tHdr = tHdr;
     LogInf("tPkt.tHdr = 0x%s", strHexToStr((unsigned char*)&tPkt.tHdr, sizeof(tPkt.tHdr)).c_str());
@@ -121,7 +121,7 @@ err clDoipClt::erConn(void)
 
     err erRtn = EC_NOK;
 
-    cTcpClt.erSetNetParm(0x0100007Fu, 0x0100007Fu, 0x5834u);
+    cTcpClt.erSetNetParm(0x0100007Fu, 0x0100007Fu, 0x5834u, 0x5934u);
 
     if(cTcpClt.erConn() == EC_OK)
     {
@@ -155,9 +155,9 @@ err clDoipClt::erReqRtgAct(void)
     LogInf("tHdr.u8ProtVer = 0x%02X", tHdr.u8ProtVer);
     tHdr.u8InvProtVer = ~tHdr.u8ProtVer;
     LogInf("tHdr.u8InvProtVer = 0x%02X", tHdr.u8InvProtVer);
-    tHdr.u16PldTyp = u16CvtEndn(static_cast<u16>(enPldTyp::DoipEntyStsReq));
+    tHdr.u16PldTyp = u16CvtEndn(static_cast<u16>(enPldTyp::RtgActReq));
     LogInf("tHdr.u16PldTyp = 0x%04X", tHdr.u16PldTyp);
-    tHdr.u32PldLen = u32CvtEndn(sizeof(tHdr) + sizeof(stPldTypRtgActReq));
+    tHdr.u32PldLen = u32CvtEndn((u32)sizeof(stPldTypRtgActReq));
     LogInf("tHdr.u32PldLen = 0x%08X", tHdr.u32PldLen);
     tPkt.tHdr = tHdr;
     LogInf("tPkt.tHdr = 0x%s", strHexToStr((unsigned char*)&tPkt.tHdr, sizeof(tPkt.tHdr)).c_str());
@@ -226,7 +226,7 @@ err clDoipClt::erReqDiag(void)
     // LogInf("tHdr.u8InvProtVer = 0x%02X", tHdr.u8InvProtVer);
     // tHdr.u16PldTyp = u16CvtEndn(static_cast<u16>(enPldTyp::DiagMsg));
     // LogInf("tHdr.u16PldTyp = 0x%04X", tHdr.u16PldTyp);
-    // tHdr.u32PldLen = u32CvtEndn(sizeof(tHdr) + sizeof());
+    // tHdr.u32PldLen = u32CvtEndn((u32)sizeof());
     // LogInf("tHdr.u32PldLen = 0x%08X", tHdr.u32PldLen);
     // tPkt.tHdr = tHdr;
 
