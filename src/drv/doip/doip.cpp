@@ -1,10 +1,10 @@
 #include <iomanip>
-#include "com.h"
-#include "doip.h"
-#include "log.h"
-#include "err.h"
-#include "tcp.h"
 #include "typ.h"
+#include "com.h"
+#include "err.h"
+#include "log.h"
+#include "tcp.h"
+#include "doip.h"
 
 #ifdef DOIP_H
 
@@ -160,7 +160,8 @@ err clDoipClt::erReqRtgAct(void)
     tHdr.u32PldLen = u32CvtEndn((u32)sizeof(stPldTypRtgActReq));
     LogInf("tHdr.u32PldLen = 0x%08X", tHdr.u32PldLen);
     tPkt.tHdr = tHdr;
-    LogInf("tPkt.tHdr = 0x%s", strHexToStr((unsigned char*)&tPkt.tHdr, sizeof(tPkt.tHdr)).c_str());
+    LogInf("tPkt.tHdr = 0x%s", strHexToStr((unsigned char*)&tPkt.tHdr,
+           sizeof(tPkt.tHdr)).c_str());
     tPldTypRtgActReq.u16SrcAdr = u16SrcAdr;
     LogInf("tPldTypRtgActReq.u16SrcAdr = 0x%04X", tPldTypRtgActReq.u16SrcAdr);
     tPldTypRtgActReq.u8ActTyp = static_cast<u8>(enRtgActReqTyp::Dflt);
@@ -170,7 +171,8 @@ err clDoipClt::erReqRtgAct(void)
     tPldTypRtgActReq.u32RsvOem = 0x00000000ul;
     LogTr("tPldTypRtgActReq.u32RsvOem = 0x%08X", tPldTypRtgActReq.u32RsvOem);
 
-    if(cTcpClt.erSnd((u8*)&tPkt, sizeof(tHdr) + sizeof(tPldTypRtgActReq)) == EC_OK)
+    if(cTcpClt.erSnd((u8*)&tPkt, sizeof(tHdr) + sizeof(tPldTypRtgActReq)) ==
+       EC_OK)
     {
         LogScs("Request route activation successful.");
 

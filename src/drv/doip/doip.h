@@ -1,9 +1,8 @@
 #ifndef DOIP_H
 #define DOIP_H
 
-#include "tcp.h"
 #include "typ.h"
-#include <cstdio>
+#include "tcp.h"
 
 // ISO 13400-2-2012.
 

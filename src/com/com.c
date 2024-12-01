@@ -14,10 +14,6 @@
 
 #ifdef COM_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /*****************************************************************************
  *函数定义                                                                   *
  *****************************************************************************/
@@ -25,32 +21,6 @@ extern "C" {
 //全局函数
 //-----------------------------------------------------------------------------
 //普通函数
-/**
- * @fn char* GetFileNm(const char* const cpPath)
- * @brief 获取全路径的文件名。
- * @details 通过查找最后一个匹配的\符号来截取文件名。
- * @param[in] cpPath 文件全路径指针。
- * @return 文件名字符串指针。
- * @attention 该函数只适用于Linux平台，Windows平台需要将 '/' 改为 '\\' 。
- */
-char* GetFileNm(const char* const cpPath)
-{
-    char* pcFileNm = NULL;
-
-    pcFileNm = strrchr(cpPath, '/');
-
-    if(pcFileNm)
-    {
-        pcFileNm = pcFileNm + 1u;
-    }
-    else
-    {
-        pcFileNm = (char*)cpPath;
-    }
-
-    return pcFileNm;
-}
-
 /**
  * @fn BOOL CmpBy(const byte* const cpbyDat1, const byte* const cpbyDat2, const word cwAmt)
  * @brief 比较byte。将两个数组的元素进行一一比较，返回比较结果。
@@ -156,9 +126,5 @@ u32 u32CvtEndn(const u32 ku32Dat)
            ((ku32Dat << 8U) & 0x00FF0000U) |
            ((ku32Dat << 24U) & 0xFF000000U);
 }
-
-#ifdef __cplusplus
-}
-#endif // __cplusplus
 
 #endif //COM_H

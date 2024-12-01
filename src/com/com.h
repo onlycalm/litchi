@@ -102,8 +102,8 @@ extern "C" {
 
 //=============================================================================
 //宏函数定义
-#define ToStr(x)                 Str(x)                      //!<宏值转字符串。
-#define Str(x)                   #x                          //!<名转字符串。
+#define pcToStr(x)               pcStr(x)                    //!<宏值转字符串。
+#define pcStr(x)                 #x                          //!<名转字符串。
 #define DoNthg(void)                                         //!<空语句。
 #define Sl(Val, N)               ((Val) << (N))              //!<左移位。
 #define Sr(Val, N)               ((Val) >> (N))              //!<右移位。
@@ -167,22 +167,22 @@ typedef union WdFld
 
     struct
     {
-        byte byB0 : 1u;  //!<Bit0.
-        byte byB1 : 1u;  //!<Bit1.
-        byte byB2 : 1u;  //!<Bit2.
-        byte byB3 : 1u;  //!<Bit3.
-        byte byB4 : 1u;  //!<Bit4.
-        byte byB5 : 1u;  //!<Bit5.
-        byte byB6 : 1u;  //!<Bit6.
-        byte byB7 : 1u;  //!<Bit7.
-        byte byB8 : 1u;  //!<Bit8.
-        byte byB9 : 1u;  //!<Bit9.
-        byte byB10 : 1u; //!<Bit10.
-        byte byB11 : 1u; //!<Bit11.
-        byte byB12 : 1u; //!<Bit12.
-        byte byB13 : 1u; //!<Bit13.
-        byte byB14 : 1u; //!<Bit14.
-        byte byB15 : 1u; //!<Bit15.
+        byte byB0  : 1u; //!< Bit0.
+        byte byB1  : 1u; //!< Bit1.
+        byte byB2  : 1u; //!< Bit2.
+        byte byB3  : 1u; //!< Bit3.
+        byte byB4  : 1u; //!< Bit4.
+        byte byB5  : 1u; //!< Bit5.
+        byte byB6  : 1u; //!< Bit6.
+        byte byB7  : 1u; //!< Bit7.
+        byte byB8  : 1u; //!< Bit8.
+        byte byB9  : 1u; //!< Bit9.
+        byte byB10 : 1u; //!< Bit10.
+        byte byB11 : 1u; //!< Bit11.
+        byte byB12 : 1u; //!< Bit12.
+        byte byB13 : 1u; //!< Bit13.
+        byte byB14 : 1u; //!< Bit14.
+        byte byB15 : 1u; //!< Bit15.
     };
 } UnWdFld;
 
@@ -193,7 +193,6 @@ typedef union WdFld
 //全局函数
 //-----------------------------------------------------------------------------
 //普通函数
-extern char* GetFileNm(const char* const cpPath);
 extern BOOL CmpBy(const byte* const cpbyDat1, const byte* const cpbyDat2, const word cwAmt);
 extern BOOL CmpWd(const word* const cpwDat1, const word* const cpwDat2, const word cwAmt);
 extern BOOL CmpDwd(const dword* const cpdwDat1, const dword* const cpdwDat2, const word cwAmt);

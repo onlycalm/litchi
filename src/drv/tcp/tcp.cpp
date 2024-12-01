@@ -3,10 +3,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <iomanip>
-#include "tcp.h"
-#include "log.h"
 #include "typ.h"
+#include "log.h"
 #include "err.h"
+#include "tcp.h"
 
 #ifdef TCP_H
 
