@@ -28,8 +28,10 @@ public:
 private:
     Ui::winMain *ui;
     clDoipClt cDoipClt;
+    clDoipSer cDoipSer;
 
     void vidConnBtnClk(void);
     void vidSndBtnClk(void);
+    void vidEcuTstBtnClk(void);
 };
 #endif // WIN_MAIN_H

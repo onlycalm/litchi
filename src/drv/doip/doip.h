@@ -277,6 +277,7 @@ public:
     clDoipSer(void);
     ~clDoipSer(void);
     err erRespVehId(void);
+    err erLsn(void);
 
 private:
     u8 au8Eid[EID_SIZE];

@@ -1,5 +1,7 @@
 #include <iostream>
+#include <qpushbutton.h>
 #include <string>
+#include <thread>
 #include "err.h"
 #include "log.h"
 #include "tcp.h"
@@ -33,8 +35,7 @@ void winMain::vidInitUi(void)
 {
     LogTr("Enter winMain::vidInitUi function.");
 
-    connect(ui->pshBtnConn, &QPushButton::clicked, this, &winMain::vidConnBtnClk);
-    connect(ui->pshBtnSnd, &QPushButton::clicked, this, &winMain::vidSndBtnClk);
+    ui->pshBtnConn->setStyleSheet("background-color: green;");
 
     LogTr("Exit winMain::vidInitUi function.");
 }
@@ -43,7 +44,9 @@ void winMain::vidInitConn(void)
 {
     LogTr("Enter winMain::vidInitConn function.");
 
-    ui->pshBtnConn->setStyleSheet("background-color: green;");
+    connect(ui->pshBtnConn, &QPushButton::clicked, this, &winMain::vidConnBtnClk);
+    connect(ui->pshBtnSnd, &QPushButton::clicked, this, &winMain::vidSndBtnClk);
+    connect(ui->pshBtnEcuTst, &QPushButton::clicked, this, &winMain::vidEcuTstBtnClk);
 
     LogTr("Exit winMain::vidInitConn function.");
 }
@@ -112,6 +115,13 @@ void winMain::vidSndBtnClk(void)
     }
 
     LogTr("Exit winMain::vidSndBtnClk function.");
+}
+
+void winMain::vidEcuTstBtnClk(void)
+{
+    LogTr("Enter winMain::vidEcuTstBtnClk function.");
+
+    LogTr("Exit winMain::vidEcuTstBtnClk function.");
 }
 
 #endif // WIN_MAIN_H

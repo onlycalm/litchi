@@ -39,6 +39,25 @@ clDoipSer::~clDoipSer(void)
     LogTr("Exit clDoipSer::~clDoipSer function.");
 }
 
+err clDoipSer::erLsn(void)
+{
+    cTcpSer.erLsn();
+    cTcpSer.erSetBlkMd(enTcpBlkMd::NonBlk);
+    u8 au8Buf[1024U] = {0U};
+    u32 u32RecvSz = 0;
+
+    do {
+        cTcpSer.erRecv(au8Buf, &u32RecvSz);
+
+        if(u32RecvSz > 0)
+        {
+            LogInf("Receive data is 0x%s", strHexToStr(au8Buf, u32RecvSz).c_str());
+        }
+    } while (cTcpSer.bIsConn() == true);
+
+    return EC_OK;
+}
+
 err clDoipSer::erRespVehId(void)
 {
     LogTr("Enter clDoipSer::erRespVehId function.");
