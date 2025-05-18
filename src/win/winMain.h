@@ -1,10 +1,10 @@
 #ifndef WIN_MAIN_H
 #define WIN_MAIN_H
 
+#include "tcp.h"
 #include <QMainWindow>
 #include <QtWidgets/QLabel>
 #include <QString>
-#include "doip.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -27,8 +27,8 @@ public:
 
 private:
     Ui::winMain *ui;
-    clDoipClt cDoipClt;
-    clDoipSer cDoipSer;
+    clTcpSer cTcpSer;
+    clTcpClt cTcpClt;
 
     void vidConnBtnClk(void);
     void vidSndBtnClk(void);

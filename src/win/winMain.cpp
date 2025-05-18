@@ -5,7 +5,6 @@
 #include "err.h"
 #include "log.h"
 #include "tcp.h"
-#include "doip.h"
 #include "winMain.h"
 #include "ui_winMain.h"
 
@@ -61,25 +60,16 @@ void winMain::vidConnBtnClk(void)
     {
         LogTr("Requst connect DOIP.");
 
-        if(cDoipClt.erConn() == EC_OK)
+        if(cTcpClt.erConn() == EC_OK)
         {
             LogScs("Successfully connected to TCP.");
 
-            if(cDoipClt.erReqRtgAct() == EC_OK)
-            {
-                LogScs("Successfully connected to DOIP.");
-
-                ui->pshBtnConn->setText("Disconnect");
-                ui->pshBtnConn->setStyleSheet("background-color: ;"); // Cancle background color.
-            }
-            else
-            {
-                LogErr("Failed to connect to TCP.");
-            }
+            ui->pshBtnConn->setText("Disconnect");
+            ui->pshBtnConn->setStyleSheet("background-color: ;"); // Cancle background color.
         }
         else
         {
-            LogErr("Failed to connect to DOIP.");
+            LogErr("Failed to connect to TCP.");
 
             ui->pshBtnConn->setStyleSheet("background-color: red;");
         }
@@ -88,7 +78,7 @@ void winMain::vidConnBtnClk(void)
     {
         LogTr("Requst disconnect DOIP.");
 
-        cDoipClt.erDisc();
+        // cDoipClt.erDisc();
 
         ui->pshBtnConn->setText("Connect");
         ui->pshBtnConn->setStyleSheet("background-color: green;");
@@ -105,14 +95,14 @@ void winMain::vidSndBtnClk(void)
 {
     LogTr("Enter winMain::vidSndBtnClk function.");
 
-    if(cDoipClt.erReqDiag() == EC_OK)
-    {
-        LogScs("DOIP successfully sent.");
-    }
-    else
-    {
-        LogErr("DOIP has failed to send.");
-    }
+    // if(cDoipClt.erReqDiag() == EC_OK)
+    // {
+    //     LogScs("DOIP successfully sent.");
+    // }
+    // else
+    // {
+    //     LogErr("DOIP has failed to send.");
+    // }
 
     LogTr("Exit winMain::vidSndBtnClk function.");
 }
