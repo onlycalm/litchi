@@ -18,10 +18,10 @@ class clTcpSer
 {
 public:
     clTcpSer(void);
-    clTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    clTcpSer(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt);
     ~clTcpSer(void);
     err erSetBlkMd(enTcpBlkMd eTcpBlkMd);
-    err erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    err erSetNetParm(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt);
     enTcpBlkMd eGetBlkMd(void);
     err erLsn(void);
     err erDisc(void);
@@ -32,12 +32,12 @@ public:
 private:
     u8 u8RecvBuf[RECV_BUF_SIZE] = {0};
     u8 u8AdrFm;
-    u16 u16LclPt;
-    u16 u16RmtPt;
-    u32 u32LclIpv4Adr;
-    u32 u32RmtIpv4Adr;
-    s16 s16LclSktId;
-    s16 s16RmtSktId;
+    u16 u16SrcPt;
+    u16 u16TgtPt;
+    u32 u32SrcIpAdr;
+    u32 u32TgtIpAdr;
+    s16 s16SrcSktId;
+    s16 s16TgtSktId;
     enTcpBlkMd eTcpBlkMd;
 };
 
@@ -45,11 +45,11 @@ class clTcpClt
 {
 public:
     clTcpClt(void);
-    clTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt);
+    clTcpClt(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt);
     ~clTcpClt(void);
     err erSetBlkMd(enTcpBlkMd eTcpBlkMd);
-    err erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16RmtPt,
-                     u16 u16LclPt);
+    err erSetNetParm(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt,
+                     u16 u16TgtPt);
     enTcpBlkMd eGetBlkMd(void);
     err erConn(void);
     err erDisc(void);
@@ -60,12 +60,12 @@ public:
 private:
     u8 u8RecvBuf[RECV_BUF_SIZE] = {0};
     u8 u8AdrFm;
-    u16 u16LclPt;
-    u16 u16RmtPt;
-    u32 u32LclIpv4Adr;
-    u32 u32RmtIpv4Adr;
-    s16 s16LclSktId;
-    s16 s16RmtSktId;
+    u16 u16SrcPt;
+    u16 u16TgtPt;
+    u32 u32SrcIpAdr;
+    u32 u32TgtIpAdr;
+    s16 s16SrcSktId;
+    s16 s16TgtSktId;
     enTcpBlkMd eTcpBlkMd;
 };
 

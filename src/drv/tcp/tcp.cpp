@@ -26,43 +26,43 @@ clTcpSer::clTcpSer(void)
     LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    u16LclPt = htons(12345);
-    u16RmtPt = htons(12346);
-    u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
-    u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
-    s16LclSktId = -1;
-    s16RmtSktId = -1;
+    u16SrcPt = htons(12345);
+    u16TgtPt = htons(12346);
+    u32SrcIpAdr = 0x0100007Fu; /* 127.0.0.1 */
+    u32TgtIpAdr = 0x0100007Fu; /* 127.0.0.1 */
+    s16SrcSktId = -1;
+    s16TgtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
 
     LogInf("u8AdrFm = %d", u8AdrFm);
-    LogInf("u16LclPt = %04X", u16LclPt);
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("s16LclSktId = %d", s16LclSktId);
-    LogInf("s16RmtSktId = %d", s16RmtSktId);
+    LogInf("u16SrcPt = %04X", u16SrcPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
+    LogInf("s16TgtSktId = %d", s16TgtSktId);
     LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     LogTr("Exit clTcpSer::clTcpSer function.");
 }
 
-clTcpSer::clTcpSer(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+clTcpSer::clTcpSer(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt)
 {
     LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    this->u16LclPt = u16LclPt;
-    this->u32LclIpv4Adr = u32LclIpv4Adr;
-    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
-    s16LclSktId = -1;
-    s16RmtSktId = -1;
+    this->u16SrcPt = u16SrcPt;
+    this->u32SrcIpAdr = u32SrcIpAdr;
+    this->u32TgtIpAdr = u32TgtIpAdr;
+    s16SrcSktId = -1;
+    s16TgtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
 
     LogInf("u8AdrFm = %d", u8AdrFm);
-    LogInf("u16LclPt = %04X", u16LclPt);
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("s16LclSktId = %d", s16LclSktId);
-    LogInf("s16RmtSktId = %d", s16RmtSktId);
+    LogInf("u16SrcPt = %04X", u16SrcPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
+    LogInf("s16TgtSktId = %d", s16TgtSktId);
     LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     LogTr("Exit clTcpSer::clTcpSer function.");
@@ -90,24 +90,24 @@ err clTcpSer::erSetBlkMd(enTcpBlkMd eTcpBlkMd)
     LogTr("Exit clTcpSer::erSetBlkMd function.");
 }
 
-err clTcpSer::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+err clTcpSer::erSetNetParm(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt)
 {
     LogTr("Enter clTcpSer::erSetNetParm function.");
 
     err erRtn = EC_NOK;
 
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("u16LclPt = 0x%08X", u16LclPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("u16SrcPt = 0x%08X", u16SrcPt);
 
-    this->u16LclPt = u16LclPt;
-    this->u32LclIpv4Adr = u32LclIpv4Adr;
-    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
+    this->u16SrcPt = u16SrcPt;
+    this->u32SrcIpAdr = u32SrcIpAdr;
+    this->u32TgtIpAdr = u32TgtIpAdr;
     erRtn = EC_OK;
 
-    LogInf("this->u16LclPt = 0x%08X", this->u16LclPt);
-    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
-    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+    LogInf("this->u16SrcPt = 0x%08X", this->u16SrcPt);
+    LogInf("this->u32TgtIpAdr = 0x%08X", this->u32TgtIpAdr);
+    LogInf("this->u32TgtIpAdr = 0x%08X", this->u32TgtIpAdr);
 
     LogTr("Exit clTcpSer::erSetNetParm function.");
 
@@ -130,10 +130,10 @@ err clTcpSer::erLsn(void)
     err erRtn = EC_OK;
 
     // Create tcp socket.
-    s16LclSktId = socket(AF_INET, SOCK_STREAM, 0);
-    LogInf("s16LclSktId = %d", s16LclSktId);
+    s16SrcSktId = socket(AF_INET, SOCK_STREAM, 0);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
 
-    if(s16LclSktId > 0)
+    if(s16SrcSktId > 0)
     {
         LogScs("Successfully created server TCP socket.");
     }
@@ -146,24 +146,24 @@ err clTcpSer::erLsn(void)
     if(erRtn == EC_OK)
     {
         // Config IP address.
-        struct sockaddr_in tLclAdr = {0};
+        struct sockaddr_in tSrcAdr = {0};
 
-        tLclAdr.sin_family = u8AdrFm;
-        tLclAdr.sin_addr.s_addr = u32LclIpv4Adr;
-        tLclAdr.sin_port = u16LclPt;
+        tSrcAdr.sin_family = u8AdrFm;
+        tSrcAdr.sin_addr.s_addr = u32SrcIpAdr;
+        tSrcAdr.sin_port = u16SrcPt;
 
-        LogInf("tLclAdr.sin_family = %d", tLclAdr.sin_family);
-        LogInf("tLclAdr.sin_addr.s_addr = 0x%08X", tLclAdr.sin_addr.s_addr);
-        LogInf("tLclAdr.sin_port = %d", tLclAdr.sin_port);
+        LogInf("tSrcAdr.sin_family = %d", tSrcAdr.sin_family);
+        LogInf("tSrcAdr.sin_addr.s_addr = 0x%08X", tSrcAdr.sin_addr.s_addr);
+        LogInf("tSrcAdr.sin_port = %d", tSrcAdr.sin_port);
 
         // Bind tcp socket.
-        if(bind(s16LclSktId, (struct sockaddr*)&tLclAdr, sizeof(tLclAdr)) >= 0)
+        if(bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
         {
             LogScs("Successfully bind server TCP socket.");
         }
         else
         {
-            close(s16LclSktId);
+            close(s16SrcSktId);
             erRtn = EC_NOK;
             LogErr("Failed to bind server TCP socket.");
         }
@@ -172,13 +172,13 @@ err clTcpSer::erLsn(void)
     if(erRtn == EC_OK)
     {
         // Listen tcp socket.
-        if(listen(s16LclSktId, 1) >= 0)
+        if(listen(s16SrcSktId, 1) >= 0)
         {
             LogScs("Successfully listen server TCP socket.");
         }
         else
         {
-            close(s16LclSktId);
+            close(s16SrcSktId);
             erRtn = EC_NOK;
             LogErr("Failed to listen server TCP socket.");
         }
@@ -187,18 +187,18 @@ err clTcpSer::erLsn(void)
     if(erRtn == EC_OK)
     {
         // Accept connect.
-        struct sockaddr_in tRmtAdr = {0};
-        socklen_t u32SktLen = sizeof(tRmtAdr);
+        struct sockaddr_in tTgtAdr = {0};
+        socklen_t u32SktLen = sizeof(tTgtAdr);
 
-        s16RmtSktId = accept(s16LclSktId, (struct sockaddr*)&tRmtAdr, &u32SktLen);
+        s16TgtSktId = accept(s16SrcSktId, (struct sockaddr*)&tTgtAdr, &u32SktLen);
 
-        if(s16RmtSktId >= 0)
+        if(s16TgtSktId >= 0)
         {
             LogScs("Successfully received socket connection.");
         }
         else
         {
-            close(s16LclSktId);
+            close(s16SrcSktId);
             erRtn = EC_NOK;
             LogErr("Failed to receive socket connection.");
         }
@@ -215,8 +215,8 @@ err clTcpSer::erDisc(void)
 
     err erRtn = EC_NOK;
 
-    shutdown(s16LclSktId, SHUT_RDWR);
-    close(s16LclSktId);
+    shutdown(s16SrcSktId, SHUT_RDWR);
+    close(s16SrcSktId);
     erRtn = EC_OK;
 
     LogTr("Exit clTcpSer::erDisc function.");
@@ -236,7 +236,7 @@ err clTcpSer::erSnd(u8* pu8Buf, u32 u32Sz)
     {
         LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
 
-        send(s16RmtSktId, pu8Buf, u32Sz, 0);
+        send(s16TgtSktId, pu8Buf, u32Sz, 0);
         LogScs("TCP successfully sent.");
         erRtn = EC_OK;
     }
@@ -260,7 +260,7 @@ err clTcpSer::erRecv(u8* pu8Buf, u32* pu32Sz)
 
     if((pu8Buf != NULL) && (pu32Sz != NULL))
     {
-        ssize_t s64RecvRst = recv(s16RmtSktId, pu8Buf, RECV_BUF_SIZE, static_cast<int>(eTcpBlkMd));
+        ssize_t s64RecvRst = recv(s16TgtSktId, pu8Buf, RECV_BUF_SIZE, static_cast<int>(eTcpBlkMd));
 
         if(s64RecvRst > 0)
         {
@@ -316,7 +316,7 @@ bool clTcpSer::bIsConn(void)
     bool bConn = false;
     u8 au8Buf[1] = {0};
 
-    ssize_t s64RecvRst = recv(s16RmtSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv));
+    ssize_t s64RecvRst = recv(s16TgtSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv));
 
     if(s64RecvRst != 0)
     {
@@ -337,43 +337,43 @@ clTcpClt::clTcpClt(void)
     LogTr("Enter clTcpClt::clTcpClt function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    u16LclPt = htons(12346);
-    u16RmtPt = htons(12345);
-    u32LclIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
-    u32RmtIpv4Adr = 0x0100007Fu; /* 127.0.0.1 */
-    s16LclSktId = -1;
-    s16RmtSktId = -1;
+    u16SrcPt = htons(12346);
+    u16TgtPt = htons(12345);
+    u32SrcIpAdr = 0x0100007Fu; /* 127.0.0.1 */
+    u32TgtIpAdr = 0x0100007Fu; /* 127.0.0.1 */
+    s16SrcSktId = -1;
+    s16TgtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
 
     LogInf("u8AdrFm = %d", u8AdrFm);
-    LogInf("u16LclPt = %04X", u16LclPt);
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("s16LclSktId = %d", s16LclSktId);
-    LogInf("s16RmtSktId = %d", s16RmtSktId);
+    LogInf("u16SrcPt = %04X", u16SrcPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
+    LogInf("s16TgtSktId = %d", s16TgtSktId);
     LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     LogTr("Exit clTcpClt::clTcpClt function.");
 }
 
-clTcpClt::clTcpClt(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16LclPt)
+clTcpClt::clTcpClt(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt)
 {
     LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    this->u16LclPt = u16LclPt;
-    this->u32LclIpv4Adr = u32LclIpv4Adr;
-    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
-    s16LclSktId = -1;
-    s16RmtSktId = -1;
+    this->u16SrcPt = u16SrcPt;
+    this->u32SrcIpAdr = u32SrcIpAdr;
+    this->u32TgtIpAdr = u32TgtIpAdr;
+    s16SrcSktId = -1;
+    s16TgtSktId = -1;
     eTcpBlkMd = enTcpBlkMd::Blk;
 
     LogInf("u8AdrFm = %d", u8AdrFm);
-    LogInf("u16LclPt = %04X", u16LclPt);
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("s16LclSktId = %d", s16LclSktId);
-    LogInf("s16RmtSktId = %d", s16RmtSktId);
+    LogInf("u16SrcPt = %04X", u16SrcPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
+    LogInf("s16TgtSktId = %d", s16TgtSktId);
     LogInf("eTcpBlkMd = %d", (int)eTcpBlkMd);
 
     LogTr("Exit clTcpSer::clTcpSer function.");
@@ -401,27 +401,27 @@ err clTcpClt::erSetBlkMd(enTcpBlkMd eTcpBlkMd)
     LogTr("Exit clTcpClt::erSetBlkMd function.");
 }
 
-err clTcpClt::erSetNetParm(u32 u32LclIpv4Adr, u32 u32RmtIpv4Adr, u16 u16RmtPt, u16 u16LclPt)
+err clTcpClt::erSetNetParm(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt, u16 u16TgtPt)
 {
     LogTr("Enter clTcpClt::erSetNetParm function.");
 
     err erRtn = EC_NOK;
 
-    LogInf("u32LclIpv4Adr = 0x%08X", u32LclIpv4Adr);
-    LogInf("u32RmtIpv4Adr = 0x%08X", u32RmtIpv4Adr);
-    LogInf("u16RmtPt = 0x%04X", u16RmtPt);
-    LogInf("u16LclPt = 0x%04X", u16LclPt);
+    LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+    LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
+    LogInf("u16TgtPt = 0x%04X", u16TgtPt);
+    LogInf("u16SrcPt = 0x%04X", u16SrcPt);
 
-    this->u32LclIpv4Adr = u32LclIpv4Adr;
-    this->u32RmtIpv4Adr = u32RmtIpv4Adr;
-    this->u16RmtPt = u16RmtPt;
-    this->u16LclPt = u16LclPt;
+    this->u32SrcIpAdr = u32SrcIpAdr;
+    this->u32TgtIpAdr = u32TgtIpAdr;
+    this->u16TgtPt = u16TgtPt;
+    this->u16SrcPt = u16SrcPt;
     erRtn = EC_OK;
 
-    LogInf("this->u16RmtPt = 0x%04X", this->u16RmtPt);
-    LogInf("this->u16LclPt = 0x%04X", this->u16LclPt);
-    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
-    LogInf("this->u32RmtIpv4Adr = 0x%08X", this->u32RmtIpv4Adr);
+    LogInf("this->u16TgtPt = 0x%04X", this->u16TgtPt);
+    LogInf("this->u16SrcPt = 0x%04X", this->u16SrcPt);
+    LogInf("this->u32TgtIpAdr = 0x%08X", this->u32TgtIpAdr);
+    LogInf("this->u32TgtIpAdr = 0x%08X", this->u32TgtIpAdr);
 
     LogTr("Exit clTcpClt::erSetNetParm function.");
 
@@ -444,10 +444,10 @@ err clTcpClt::erConn(void)
     err erRtn = EC_OK;
 
     // Create tcp socket.
-    s16LclSktId = socket(AF_INET, SOCK_STREAM, 0);
-    LogInf("s16LclSktId = %d", s16LclSktId);
+    s16SrcSktId = socket(AF_INET, SOCK_STREAM, 0);
+    LogInf("s16SrcSktId = %d", s16SrcSktId);
 
-    if(s16LclSktId > 0)
+    if(s16SrcSktId > 0)
     {
         LogScs("Successfully created server TCP socket.");
     }
@@ -462,7 +462,7 @@ err clTcpClt::erConn(void)
         int Enable = 1;
 
         // Allow immediate reconnection.
-        if(setsockopt(s16LclSktId, SOL_SOCKET, SO_REUSEADDR, &Enable, sizeof(int)) >= 0)
+        if(setsockopt(s16SrcSktId, SOL_SOCKET, SO_REUSEADDR, &Enable, sizeof(int)) >= 0)
         {
             LogScs("SO_REUSEADDR configuration successful.");
         }
@@ -475,13 +475,13 @@ err clTcpClt::erConn(void)
     if(erRtn == EC_OK)
     {
         // Bind IP.
-        struct sockaddr_in tLclAdr = {0};
+        struct sockaddr_in tSrcAdr = {0};
 
-        tLclAdr.sin_family = u8AdrFm;
-        tLclAdr.sin_addr.s_addr = u32LclIpv4Adr;
-        tLclAdr.sin_port = u16LclPt;
+        tSrcAdr.sin_family = u8AdrFm;
+        tSrcAdr.sin_addr.s_addr = u32SrcIpAdr;
+        tSrcAdr.sin_port = u16SrcPt;
 
-        if(bind(s16LclSktId, (struct sockaddr*)&tLclAdr, sizeof(tLclAdr)) >= 0)
+        if(bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
         {
             LogScs("Local IP binding successful.");
         }
@@ -490,7 +490,7 @@ err clTcpClt::erConn(void)
             LogErr("Local IP binding failed.");
             LogInf("errno = 0x%08X", errno);
 
-            close(s16LclSktId);
+            close(s16SrcSktId);
             erRtn = EC_NOK;
         }
     }
@@ -498,13 +498,13 @@ err clTcpClt::erConn(void)
     if(erRtn == EC_OK)
     {
         // Config IP address.
-        struct sockaddr_in tRmtAdr = {0};
+        struct sockaddr_in tTgtAdr = {0};
 
-        tRmtAdr.sin_family = u8AdrFm;
-        tRmtAdr.sin_addr.s_addr = u32LclIpv4Adr;
-        tRmtAdr.sin_port = u16RmtPt;
+        tTgtAdr.sin_family = u8AdrFm;
+        tTgtAdr.sin_addr.s_addr = u32SrcIpAdr;
+        tTgtAdr.sin_port = u16TgtPt;
 
-        if(connect(s16LclSktId, (struct sockaddr*)&tRmtAdr, sizeof(tRmtAdr)) >= 0)
+        if(connect(s16SrcSktId, (struct sockaddr*)&tTgtAdr, sizeof(tTgtAdr)) >= 0)
         {
             LogScs("Connected successfully.");
         }
@@ -512,7 +512,7 @@ err clTcpClt::erConn(void)
         {
             LogErr("Connection Failed.");
 
-            close(s16LclSktId);
+            close(s16SrcSktId);
             erRtn = EC_NOK;
         }
     }
@@ -528,8 +528,8 @@ err clTcpClt::erDisc(void)
 
     err erRtn = EC_NOK;
 
-    shutdown(s16LclSktId, SHUT_RDWR);
-    close(s16LclSktId);
+    shutdown(s16SrcSktId, SHUT_RDWR);
+    close(s16SrcSktId);
     erRtn = EC_OK;
 
     LogTr("Exit clTcpClt::erDisc function.");
@@ -549,7 +549,7 @@ err clTcpClt::erSnd(u8* pu8Buf, u32 u32Sz)
     {
         LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
 
-        send(s16LclSktId, pu8Buf, u32Sz, 0);
+        send(s16SrcSktId, pu8Buf, u32Sz, 0);
         LogScs("TCP successfully sent.");
         erRtn = EC_OK;
     }
@@ -574,7 +574,7 @@ err clTcpClt::erRecv(u8* pu8Buf, u32* pu32Sz)
 
     if((pu8Buf != NULL) && (pu32Sz != NULL))
     {
-        ssize_t s64RecvRst = recv(s16LclSktId, pu8Buf, RECV_BUF_SIZE, static_cast<int>(eTcpBlkMd));
+        ssize_t s64RecvRst = recv(s16SrcSktId, pu8Buf, RECV_BUF_SIZE, static_cast<int>(eTcpBlkMd));
 
         if(s64RecvRst > 0)
         {
@@ -630,7 +630,7 @@ bool clTcpClt::bIsConn(void)
     bool bConn = false;
     u8 au8Buf[1] = {0};
 
-    ssize_t s64RecvRst = recv(s16LclSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv) | static_cast<int>(enTcpBlkMd::NonBlk));
+    ssize_t s64RecvRst = recv(s16SrcSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv) | static_cast<int>(enTcpBlkMd::NonBlk));
     LogInf("recv return s64 %d", (int)s64RecvRst);
 
     if(s64RecvRst > 0)

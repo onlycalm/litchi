@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 
 include_directories(
     ./src
@@ -40,3 +41,15 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 qt_add_executable(litchi ${SRC_LIST})
 
 target_link_libraries(litchi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
+add_custom_target(debug
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug .
+    COMMAND ${CMAKE_COMMAND} --build .
+    COMMENT "Building Debug version"
+)
+
+add_custom_target(release
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release .
+    COMMAND ${CMAKE_COMMAND} --build .
+    COMMENT "Building Release version"
+)

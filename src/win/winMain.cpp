@@ -10,6 +10,8 @@
 
 #ifdef WIN_MAIN_H
 
+using namespace std;
+
 winMain::winMain(QWidget *parent) : QMainWindow(parent), ui(new Ui::winMain)
 {
     LogTr("Enter winMain::winMain function.");
@@ -43,9 +45,15 @@ void winMain::vidInitConn(void)
 {
     LogTr("Enter winMain::vidInitConn function.");
 
-    connect(ui->pshBtnConn, &QPushButton::clicked, this, &winMain::vidConnBtnClk);
+    connect(ui->pshBtnConn,
+            &QPushButton::clicked,
+            this,
+            &winMain::vidConnBtnClk);
     connect(ui->pshBtnSnd, &QPushButton::clicked, this, &winMain::vidSndBtnClk);
-    connect(ui->pshBtnEcuTst, &QPushButton::clicked, this, &winMain::vidEcuTstBtnClk);
+    connect(ui->pshBtnEcuTst,
+            &QPushButton::clicked,
+            this,
+            &winMain::vidEcuTstBtnClk);
 
     LogTr("Exit winMain::vidInitConn function.");
 }
@@ -54,29 +62,64 @@ void winMain::vidConnBtnClk(void)
 {
     LogTr("Enter winMain::vidConnBtnClk function");
 
-    std::string strConn = ui->pshBtnConn->text().toStdString();
+    string strConn = ui->pshBtnConn->text().toStdString();
 
     if(strConn == "Connect")
     {
-        LogTr("Requst connect DOIP.");
+        LogTr("Requst connect tcp.");
 
-        if(cTcpClt.erConn() == EC_OK)
+        string strSrcIp = ui->lnEdSrcIp->text().toStdString();
+        string strTgtIp = ui->lnEdTgtIp->text().toStdString();
+        string strSrcPt = ui->lnEdSrcPt->text().toStdString();
+        string strTgtPt = ui->lnEdTgtPt->text().toStdString();
+        u32 u32SrcIpAdr = 0u;
+        u32 u32TgtIpAdr = 0u;
+        u16 u16SrcPt = static_cast<u16>(stoi(strSrcPt));
+        u16 u16TgtPt = static_cast<u16>(stoi(strTgtPt));
+
+        LogInf("strSrcIp = %s", strSrcIp.c_str());
+        LogInf("strTgtIp = %s", strTgtIp.c_str());
+        LogInf("strSrcPt = %s", strSrcPt.c_str());
+        LogInf("strTgtPt = %s", strTgtPt.c_str());
+        LogInf("u16SrcPt = %d", u16SrcPt);
+        LogInf("u16TgtPt = %d", u16TgtPt);
+
+        if((erIpToU32(strSrcIp.c_str(), EndnLe, &u32SrcIpAdr) == EC_OK) &&
+           (erIpToU32(strTgtIp.c_str(), EndnLe, &u32TgtIpAdr) == EC_OK))
         {
-            LogScs("Successfully connected to TCP.");
+            LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
+            LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
 
-            ui->pshBtnConn->setText("Disconnect");
-            ui->pshBtnConn->setStyleSheet("background-color: ;"); // Cancle background color.
+            if(cTcpClt.erSetNetParm(u32SrcIpAdr, u32TgtIpAdr, u16SrcPt, u16TgtPt))
+            {
+                if(cTcpClt.erConn() == EC_OK)
+                {
+                    LogScs("Successfully connected to TCP.");
+
+                    ui->pshBtnConn->setText("Disconnect");
+                    ui->pshBtnConn->setStyleSheet(
+                        "background-color: ;"); // Cancle background color.
+                }
+                else
+                {
+                    LogErr("Failed to connect to TCP.");
+
+                    ui->pshBtnConn->setStyleSheet("background-color: red;");
+                }
+            }
+            else
+            {
+                LogErr("Failed to configure network parameters.");
+            }
         }
         else
         {
-            LogErr("Failed to connect to TCP.");
-
-            ui->pshBtnConn->setStyleSheet("background-color: red;");
+            LogErr("Failed to extract IP address.");
         }
     }
     else if(strConn == "Disconnect")
     {
-        LogTr("Requst disconnect DOIP.");
+        LogTr("Requst disconnect tcp.");
 
         // cDoipClt.erDisc();
 
