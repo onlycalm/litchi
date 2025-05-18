@@ -11,13 +11,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
+
 include_directories(
     ./src
     ./src/com
     ./src/log
     ./src/drv/tcp
-    ./src/drv/doip
-    ./src/drv/uds
     ./src/win
 )
 
@@ -25,8 +25,6 @@ aux_source_directory(./src SRC_SOURCES)
 aux_source_directory(./src/com COM_SOURCES)
 aux_source_directory(./src/log LOG_SOURCES)
 aux_source_directory(./src/drv/tcp TCP_SOURCES)
-aux_source_directory(./src/drv/doip DOIP_SOURCES)
-aux_source_directory(./src/drv/uds UDS_SOURCES)
 aux_source_directory(./src/win WIN_SOURCES)
 
 set(SRC_LIST
@@ -34,8 +32,6 @@ set(SRC_LIST
     ${COM_SOURCES}
     ${LOG_SOURCES}
     ${TCP_SOURCES}
-    ${DOIP_SOURCES}
-    ${UDS_SOURCES}
     ${WIN_SOURCES}
 )
 
