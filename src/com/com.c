@@ -9,8 +9,11 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "com.h"
+#include "log.h"
 #include "typ.h"
+#include "err.h"
 
 #ifdef COM_H
 
@@ -125,6 +128,85 @@ u32 u32CvtEndn(const u32 ku32Dat)
            ((ku32Dat >> 8U) & 0x0000FF00U) |
            ((ku32Dat << 8U) & 0x00FF0000U) |
            ((ku32Dat << 24U) & 0xFF000000U);
+}
+
+err erIpToU32(const char* const kpkcIp, EEndn eEndn, u32* const kpu32Ip)
+{
+    LogTr("Enter erIpToU32 function.");
+
+    u8 au8IpAdr[IP_V4_SZ] = {0u};
+    u32 u32IpAdr = 0u;
+    int asIpAdr[IP_V4_SZ] = {0u};
+    err erRslt = EC_NOK;
+
+    LogInf("kpkcIp = %s", kpkcIp);
+    LogInf("eEndn = %d", eEndn);
+    LogInf("kpu32Ip = %p", (void*)kpu32Ip);
+
+    if((kpkcIp != NULL) && (eEndn < EndnMax) && (kpu32Ip != NULL))
+    {
+        if(sscanf(kpkcIp,
+                  "%d.%d.%d.%d",
+                  &asIpAdr[0u],
+                  &asIpAdr[1u],
+                  &asIpAdr[2u],
+                  &asIpAdr[3u]) == IP_V4_SZ)
+        {
+            if((bInRng(asIpAdr[0u], IP_MIN, IP_MAX)) &&
+               (bInRng(asIpAdr[1u], IP_MIN, IP_MAX)) &&
+               (bInRng(asIpAdr[2u], IP_MIN, IP_MAX)) &&
+               (bInRng(asIpAdr[3u], IP_MIN, IP_MAX)))
+            {
+                au8IpAdr[0u] = asIpAdr[0u];
+                au8IpAdr[1u] = asIpAdr[1u];
+                au8IpAdr[2u] = asIpAdr[2u];
+                au8IpAdr[3u] = asIpAdr[3u];
+
+                LogInf("au8IpAdr[0u] = %d", au8IpAdr[0u]);
+                LogInf("au8IpAdr[1u] = %d", au8IpAdr[1u]);
+                LogInf("au8IpAdr[2u] = %d", au8IpAdr[2u]);
+                LogInf("au8IpAdr[3u] = %d", au8IpAdr[3u]);
+
+                if(eEndn == EndnLe)
+                {
+                    *kpu32Ip = u32MrU32(au8IpAdr[0],
+                                        au8IpAdr[1],
+                                        au8IpAdr[2],
+                                        au8IpAdr[3]);
+                }
+                else
+                {
+                    *kpu32Ip = u32MrU32(au8IpAdr[3],
+                                        au8IpAdr[2],
+                                        au8IpAdr[1],
+                                        au8IpAdr[0]);
+                }
+
+                LogInf("*kpu32Ip = 0x%08X", *kpu32Ip);
+
+                erRslt = EC_OK;
+            }
+            else
+            {
+                erRslt = EC_NOK;
+                LogErr("Data overflow.");
+            }
+        }
+        else
+        {
+            erRslt = EC_NOK;
+            LogErr("Invalid IP address format.");
+        }
+    }
+    else
+    {
+        erRslt = EC_NOK;
+        LogErr("Input parameter check failed.");
+    }
+
+    LogTr("Exit erIpToU32 function.");
+
+    return erRslt;
 }
 
 #endif //COM_H

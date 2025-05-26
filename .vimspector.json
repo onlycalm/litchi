@@ -1,0 +1,13 @@
+{
+  "configurations": {
+    "GDB Debug": {
+      "adapter": "vscode-cpptools",
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceFolder}/build/litchi",
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  }
+}
+
