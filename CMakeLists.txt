@@ -22,8 +22,8 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
 
 set(BUILD_LOG "${CMAKE_BINARY_DIR}/build.log")
-set(ANALYZE_BUILD_LOG_SH "${CMAKE_SOURCE_DIR}/scr/build/analyze_build_log.sh")
-set(PRINT_BANNER_SH "${CMAKE_SOURCE_DIR}/scr/build/print_banner.sh")
+set(ANALYZE_BUILD_LOG_SH "${CMAKE_SOURCE_DIR}/scr/chore/analyze_build_log.sh")
+set(PRINT_BANNER_SH "${CMAKE_SOURCE_DIR}/scr/chore/print_banner.sh")
 set(ANALYZE_BUILD_LOG_JSON "${CMAKE_BINARY_DIR}/analyze_build_log.json")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
