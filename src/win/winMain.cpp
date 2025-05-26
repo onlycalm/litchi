@@ -90,7 +90,10 @@ void winMain::vidConnBtnClk(void)
             LogInf("u32SrcIpAdr = 0x%08X", u32SrcIpAdr);
             LogInf("u32TgtIpAdr = 0x%08X", u32TgtIpAdr);
 
-            if(cTcpClt.erSetNetParm(u32SrcIpAdr, u32TgtIpAdr, u16SrcPt, u16TgtPt))
+            if(cTcpClt.erSetNetParm(u32SrcIpAdr,
+                                    u32TgtIpAdr,
+                                    u16SrcPt,
+                                    u16TgtPt) == EC_OK)
             {
                 if(cTcpClt.erConn() == EC_OK)
                 {

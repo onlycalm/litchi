@@ -103,6 +103,14 @@ extern "C" {
 #define IP_V4_SZ 4u
 #endif // IP_V4_SZ
 
+#ifndef IP_MIN
+#define IP_MIN 0u
+#endif // IP_MIN
+
+#ifndef IP_MAX
+#define IP_MAX 255u
+#endif // IP_MAX
+
 // Macro function definition.
 #define pcToStr(x)       pcStr(x)         //!< Convert macro value to string.
 #define pcStr(x)         #x               //!< Name to string conversion.
@@ -124,6 +132,7 @@ extern "C" {
            SetBitFld((u8By1), 8u, 0x0000FF00u) | \
            SetBitFld((u8By2), 16u, 0x00FF0000u) | \
            SetBitFld((u8By3), 24u, 0xFF000000u)))
+#define bInRng(Val, Min, Max) (((Val) >= (Min)) && ((Val) <= (Max)))
 
 /******************************************************************************
  * Enumeration definition                                                     *

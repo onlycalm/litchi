@@ -510,7 +510,7 @@ err clTcpClt::erConn(void)
         }
         else
         {
-            LogErr("Connection Failed.");
+            LogErr("Connection Failed. Error: %s", strerror(errno));
 
             close(s16SrcSktId);
             erRtn = EC_NOK;
