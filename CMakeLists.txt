@@ -24,6 +24,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86
 set(BUILD_LOG "${CMAKE_BINARY_DIR}/build.log")
 set(ANALYZE_BUILD_LOG_SH "${CMAKE_SOURCE_DIR}/scr/build/analyze_build_log.sh")
 set(PRINT_BANNER_SH "${CMAKE_SOURCE_DIR}/scr/build/print_banner.sh")
+set(ANALYZE_BUILD_LOG_JSON "${CMAKE_BINARY_DIR}/analyze_build_log.json")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(
@@ -68,8 +69,8 @@ target_link_libraries(litchi PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} -E echo "=== Starting debug build ===" | tee -a ${BUILD_LOG}
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR} && ${CMAKE_COMMAND} --build . 2>&1 | tee -a "${BUILD_LOG}"
-    COMMAND bash "${ANALYZE_BUILD_LOG_SH}" "${BUILD_LOG}" "Debug"
-    COMMAND bash "${PRINT_BANNER_SH}" "${BUILD_LOG}"
+    COMMAND bash "${ANALYZE_BUILD_LOG_SH}" "${BUILD_LOG}" "Debug" "${ANALYZE_BUILD_LOG_JSON}"
+    COMMAND bash "${PRINT_BANNER_SH}" "${ANALYZE_BUILD_LOG_JSON}" "${BUILD_LOG}"
     COMMAND date "+%Y-%m-%d %H:%M:%S"
     VERBATIM
 )
@@ -77,8 +78,8 @@ add_custom_target(debug
 add_custom_target(release
     COMMAND ${CMAKE_COMMAND} -E echo "=== Starting release build ===" | tee -a ${BUILD_LOG}
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR} && ${CMAKE_COMMAND} --build . 2>&1 | tee -a "${BUILD_LOG}"
-    COMMAND bash "${ANALYZE_BUILD_LOG_SH}" "${BUILD_LOG}" "Release"
-    COMMAND bash "${PRINT_BANNER_SH}" "${BUILD_LOG}"
+    COMMAND bash "${ANALYZE_BUILD_LOG_SH}" "${BUILD_LOG}" "Release" "${ANALYZE_BUILD_LOG_JSON}"
+    COMMAND bash "${PRINT_BANNER_SH}" "${ANALYZE_BUILD_LOG_JSON}" "${BUILD_LOG}"
     COMMAND date "+%Y-%m-%d %H:%M:%S"
     VERBATIM
 )
