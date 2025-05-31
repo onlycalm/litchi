@@ -20,7 +20,7 @@ def AnlsBldLog(BldLogPth):
     WrnPatn = re.compile('|'.join(f'({pat})' for pat in LstWrnPatn), re.IGNORECASE)
 
     try:
-        BldLog = open(BldLogPth, 'r', encoding='utf-8')
+        BldLog = open(BldLogPth, 'r', encoding = 'utf-8')
 
         for line in BldLog:
             if ErrPatn.search(line):
@@ -28,13 +28,10 @@ def AnlsBldLog(BldLogPth):
 
             if WrnPatn.search(line):
                 WrnCnt += 1
-
     except FileNotFoundError:
         print(f"Error: {BldLogPth} does not exist.")
-        return None
     except Exception as e:
         print(f"Error: {e}")
-        return None
 
     return ErrCnt, WrnCnt
 
