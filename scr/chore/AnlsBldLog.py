@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import json
+import PrnTee
 
 InputParamNum = 4
 
@@ -47,6 +48,9 @@ def main():
         VerTyp = sys.argv[1]
         BldLogPth = sys.argv[2]
         AnlsBldLogJsonPth = sys.argv[3]
+
+        BldLog = open(BldLogPth, "a")
+        sys.stdout = PrnTee.Tee(sys.stdout, BldLog)
 
         ErrCnt, WrnCnt = AnlsBldLog(BldLogPth)
         AnlsBldLogDat = {"errors": ErrCnt, "warnings": WrnCnt}

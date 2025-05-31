@@ -88,22 +88,22 @@ set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY ADDITIONAL_CLEAN_FILES "${EX
 
 add_custom_target(debug
     COMMAND ${CMAKE_COMMAND} -E echo "=== Starting debug build ===" | tee -a ${BUILD_LOG}
-    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "Begin" "${COMPIL_TM_JSON}"
+    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "Begin" "${COMPIL_TM_JSON}" "${BUILD_LOG}"
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR} && ${CMAKE_COMMAND} --build . 2>&1 | tee -a "${BUILD_LOG}"
     COMMAND ${Python3_EXECUTABLE} ${ANALYZE_BUILD_LOG_PY} "Debug" "${BUILD_LOG}" "${ANALYZE_BUILD_LOG_JSON}"
     COMMAND ${Python3_EXECUTABLE} ${PRINT_BANNER_PY} "${ANALYZE_BUILD_LOG_JSON}" "${BUILD_LOG}"
-    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "End" "${COMPIL_TM_JSON}"
+    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "End" "${COMPIL_TM_JSON}" "${BUILD_LOG}"
     COMMAND bash -c "echo \"Compilation completion time: $(date '+%Y-%m-%d %H:%M:%S')\" | tee -a ${BUILD_LOG}"
     VERBATIM
 )
 
 add_custom_target(release
     COMMAND ${CMAKE_COMMAND} -E echo "=== Starting release build ===" | tee -a ${BUILD_LOG}
-    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "Begin" "${COMPIL_TM_JSON}"
+    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "Begin" "${COMPIL_TM_JSON}" "${BUILD_LOG}"
     COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR} && ${CMAKE_COMMAND} --build . 2>&1 | tee -a "${BUILD_LOG}"
     COMMAND ${Python3_EXECUTABLE} ${ANALYZE_BUILD_LOG_PY} "Release" "${BUILD_LOG}" "${ANALYZE_BUILD_LOG_JSON}"
     COMMAND ${Python3_EXECUTABLE} ${PRINT_BANNER_PY} "${ANALYZE_BUILD_LOG_JSON}" "${BUILD_LOG}"
-    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "End" "${COMPIL_TM_JSON}"
+    COMMAND ${Python3_EXECUTABLE} ${REC_COMPIL_TM_PY} "End" "${COMPIL_TM_JSON}" "${BUILD_LOG}"
     COMMAND bash -c "echo \"Compilation completion time: $(date '+%Y-%m-%d %H:%M:%S')\" | tee -a ${BUILD_LOG}"
     VERBATIM
 )
