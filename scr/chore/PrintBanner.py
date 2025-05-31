@@ -1,6 +1,7 @@
 import sys
 import os
 import json
+import PrnTee
 
 InputParamNum = 3
 
@@ -18,7 +19,7 @@ ClrYlw = "\033[33m"
 ClrGrn = "\033[32m"
 ClrRst = "\033[0m"
 
-def PrintBnr(ErrCnt, WrnCnt, LogFilePth):
+def PrintBnr(ErrCnt, WrnCnt):
     if ErrCnt > 0:
         Clr = ClrRed
     elif WrnCnt > 0:
@@ -26,24 +27,20 @@ def PrintBnr(ErrCnt, WrnCnt, LogFilePth):
     else:
         Clr = ClrGrn
 
-    BnrClr = f"{Clr}{Logo}{ClrRst}"
-    print(BnrClr)
-
-    try:
-        with open(LogFilePth, "a") as file:
-            file.write(BnrClr)
-    except Exception as e:
-        print(f"Error: Fail to write to file.", file=sys.stderr)
+    print(f"{Clr}{Logo}{ClrRst}")
 
 def main():
     if len(sys.argv) == InputParamNum:
         AnlsBldLogJsonPth = sys.argv[1]
         BldLogPth = sys.argv[2]
 
+        BldLog = open(BldLogPth, "a")
+        sys.stdout = PrnTee.Tee(sys.stdout, BldLog)
+
         try:
             AnlsBldLogJson = open(AnlsBldLogJsonPth, 'r', encoding = 'utf-8')
             AnlsBldLogDat = json.load(AnlsBldLogJson)
-            PrintBnr(AnlsBldLogDat["errors"], AnlsBldLogDat["warnings"], BldLogPth)
+            PrintBnr(AnlsBldLogDat["errors"], AnlsBldLogDat["warnings"])
         except FileNotFoundError:
             print(f"Error: {AnlsBldLogJsonPth} does not exist.")
         except json.JSONDecodeError:

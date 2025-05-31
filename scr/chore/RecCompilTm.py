@@ -1,8 +1,9 @@
 import sys
 import json
+import PrnTee
 from datetime import datetime
 
-InputParamNum = 3
+InputParamNum = 4
 
 def RecBegTm(RecTmPth):
     try:
@@ -49,6 +50,10 @@ def main():
     if len(sys.argv) == InputParamNum:
         Stg = sys.argv[1]
         RecTmPth = sys.argv[2]
+        BldLogPth = sys.argv[3]
+
+        BldLog = open(BldLogPth, "a")
+        sys.stdout = PrnTee.Tee(sys.stdout, BldLog)
 
         if Stg == "Begin":
             RecBegTm(RecTmPth)
