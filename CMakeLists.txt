@@ -12,6 +12,9 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(litchi VERSION 0.1 LANGUAGES CXX C)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(Util)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -131,7 +134,5 @@ math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
 math(EXPR seconds "${elapsed_ms} / 1000")
 math(EXPR milliseconds "${elapsed_ms} % 1000")
 
-message(STATUS "Building cmake takes time: ${seconds}.${milliseconds}s")
-file(APPEND "${BUILD_LOG}" "Building cmake takes time: ${seconds}.${milliseconds}s\n")
-message(STATUS "Python3 path is: ${Python3_EXECUTABLE}")
-file(APPEND "${BUILD_LOG}" "Python3 path is: ${Python3_EXECUTABLE}\n")
+PrintLog("Building cmake takes time: ${seconds}.${milliseconds}s")
+PrintLog("Python3 path is: ${Python3_EXECUTABLE}")
