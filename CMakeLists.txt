@@ -29,6 +29,13 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
+set(PYTHON_ROOT "${CMAKE_SOURCE_DIR}/tlchn/python/python-3.10.12")
+set(Python3_FIND_REGISTRY NEVER)
+set(Python3_FIND_STRATEGY LOCATION)
+
+set(Python3_EXECUTABLE "${PYTHON_ROOT}/bin/python3.10")
+set(PYTHON_INCLUDE_DIR "${PYTHON_ROOT}/include/python3.10")
+set(PYTHON_LIBRARY "${PYTHON_ROOT}/lib/libpython3.10.so")
 
 set(BUILD_LOG "${CMAKE_BINARY_DIR}/build.log")
 set(SCR_CHORE_PATH "${CMAKE_SOURCE_DIR}/scr/chore")
@@ -49,6 +56,8 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         -fdiagnostics-color=always
     )
 endif()
+
+include_directories(${PYTHON_INCLUDE_DIR})
 
 include_directories(
     ./src
@@ -119,8 +128,10 @@ else()
 endif()
 
 math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
-
 math(EXPR seconds "${elapsed_ms} / 1000")
 math(EXPR milliseconds "${elapsed_ms} % 1000")
 
 message(STATUS "Building cmake takes time: ${seconds}.${milliseconds}s")
+file(APPEND "${BUILD_LOG}" "Building cmake takes time: ${seconds}.${milliseconds}s\n")
+message(STATUS "Python3 path is: ${Python3_EXECUTABLE}")
+file(APPEND "${BUILD_LOG}" "Python3 path is: ${Python3_EXECUTABLE}\n")
