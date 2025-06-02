@@ -29,10 +29,19 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
+set(CMAKE_TLCHN_ROOT "${CMAKE_SOURCE_DIR}/tlchn/cmake/cmake-3.22.1")
 set(PYTHON_ROOT "${CMAKE_SOURCE_DIR}/tlchn/python/python-3.10.12")
+set(QT_NO_GLOBAL_CMAKE ON)
+set(QT_NO_DEFAULT_CMAKE ON)
 set(Python3_FIND_REGISTRY NEVER)
 set(Python3_FIND_STRATEGY LOCATION)
 
+set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
+set(Qt6_DIR "${CMAKE_SOURCE_DIR}/tlchn/qt/qt-6.9.0/lib/cmake/Qt6")
+set(Qt6Core_DIR "${CMAKE_SOURCE_DIR}/tlchn/qt/qt-6.9.0/lib/cmake/Qt6Core")
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/tlchn/qt/qt-6.9.0/gcc_64")
+set(QT_QMAKE_EXECUTABLE "${CMAKE_PREFIX_PATH}/bin/qmake")
+set(QT_MOC_EXECUTABLE "${CMAKE_PREFIX_PATH}/bin/moc")
 set(Python3_EXECUTABLE "${PYTHON_ROOT}/bin/python3.10")
 set(PYTHON_INCLUDE_DIR "${PYTHON_ROOT}/include/python3.10")
 set(PYTHON_LIBRARY "${PYTHON_ROOT}/lib/libpython3.10.so")
@@ -48,6 +57,8 @@ set(REC_COMPIL_TM_PY "${SCR_CHORE_PATH}/RecCompilTm.py")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(Util)
 include(TlchnSetup)
+include(CMakeSetup)
+include(QtSetup)
 include(PythonSetup)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -84,6 +95,12 @@ set(SRC_LIST
     ${LOG_SOURCES}
     ${TCP_SOURCES}
     ${WIN_SOURCES}
+)
+
+find_program(PROJECT_CMAKE cmake
+  PATHS "${CMAKE_TLCHN_ROOT}/bin"
+  NO_DEFAULT_PATH
+  NO_CMAKE_FIND_ROOT_PATH
 )
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
@@ -136,5 +153,11 @@ math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
 math(EXPR seconds "${elapsed_ms} / 1000")
 math(EXPR milliseconds "${elapsed_ms} % 1000")
 
+PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
+PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
+PrintLog(STATUS "Qt6 path: ${Qt6_DIR}")
+PrintLog(STATUS "Qt6 core path: ${Qt6Core_DIR}")
+PrintLog(STATUS "Qt6 version: ${Qt6_VERSION}")
+PrintLog(STATUS "Python3 path: ${Python3_EXECUTABLE}")
+PrintLog(STATUS "Python3 version: ${Python3_VERSION}")
 PrintLog(STATUS "Building cmake takes time: ${seconds}.${milliseconds}s")
-PrintLog(STATUS "Python3 path is: ${Python3_EXECUTABLE}")
