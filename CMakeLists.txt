@@ -12,9 +12,6 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project(litchi VERSION 0.1 LANGUAGES CXX C)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-include(Util)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -47,6 +44,11 @@ set(COMPIL_TM_JSON "${CMAKE_BINARY_DIR}/CompilTm.json")
 set(ANALYZE_BUILD_LOG_PY "${SCR_CHORE_PATH}/AnlsBldLog.py")
 set(PRINT_BANNER_PY "${SCR_CHORE_PATH}/PrintBanner.py")
 set(REC_COMPIL_TM_PY "${SCR_CHORE_PATH}/RecCompilTm.py")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(Util)
+include(TlchnSetup)
+include(PythonSetup)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(
@@ -134,5 +136,5 @@ math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
 math(EXPR seconds "${elapsed_ms} / 1000")
 math(EXPR milliseconds "${elapsed_ms} % 1000")
 
-PrintLog("Building cmake takes time: ${seconds}.${milliseconds}s")
-PrintLog("Python3 path is: ${Python3_EXECUTABLE}")
+PrintLog(STATUS "Building cmake takes time: ${seconds}.${milliseconds}s")
+PrintLog(STATUS "Python3 path is: ${Python3_EXECUTABLE}")

@@ -1,5 +1,8 @@
-# 通用日志函数（同时输出到终端和文件）
-function(PrintLog message)
-    message(STATUS "${message}")
-    file(APPEND "${BUILD_LOG}" "${message}\n")
+# PrintLog
+# parameter:
+#   MsgTyp - message type [STATUS|WARNING|AUTHOR_WARNING|SEND_ERROR|FATAL_ERROR|DEPRECATION]
+#   Msg    - message
+function(PrintLog MsgTyp Msg)
+    message(${MsgTyp} "${Msg}")
+    file(APPEND "${BUILD_LOG}" "${Msg}\n")
 endfunction()
