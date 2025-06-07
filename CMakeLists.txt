@@ -33,6 +33,7 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
 set(TLCHN_DIR "${CMAKE_SOURCE_DIR}/tlchn")
 set(ZLIB_ROOT "${TLCHN_DIR}/zlib/zlib-1.2.11")
+set(ICU_ROOT "${TLCHN_DIR}/icu/icu-70.1")
 set(CMAKE_TLCHN_ROOT "${TLCHN_DIR}/cmake/cmake-3.22.1")
 set(QT6_ROOT "${TLCHN_DIR}/qt/qt-6.9.0")
 set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
@@ -54,12 +55,11 @@ set(ANALYZE_BUILD_LOG_PY "${SCR_CHORE_PATH}/AnlsBldLog.py")
 set(PRINT_BANNER_PY "${SCR_CHORE_PATH}/PrintBanner.py")
 set(REC_COMPIL_TM_PY "${SCR_CHORE_PATH}/RecCompilTm.py")
 
-# set(CMAKE_PREFIX_PATH "${ZLIB_ROOT};...")
-
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(Util)
 include(TlchnSetup)
 include(ZlibSetup)
+include(IcuSetup)
 include(CMakeSetup)
 include(QtSetup)
 include(PythonSetup)
@@ -106,7 +106,6 @@ find_program(PROJECT_CMAKE cmake
   NO_CMAKE_FIND_ROOT_PATH
 )
 
-find_package(ZLIB REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
@@ -163,6 +162,8 @@ string(REGEX REPLACE "define ZLIB_VERSION \"([^\"]*)\"" "\\1" ZLIB_VERSION ${ZLI
 
 PrintLog(STATUS "zlib path: ${ZLIB_ROOT}")
 PrintLog(STATUS "zlib version: ${ZLIB_VERSION}")
+PrintLog(STATUS "icu path: ${ICU_ROOT}")
+PrintLog(STATUS "icu version: ${ICU_VERSION}")
 PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
 PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
 PrintLog(STATUS "Qt6 path: ${Qt6_DIR}")

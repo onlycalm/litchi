@@ -18,7 +18,7 @@ if(NOT EXISTS "${PYTHON_INSTL_DIR}")
     file(MAKE_DIRECTORY ${PYTHON_INSTL_DIR})
 
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf "${PYTHON_PKT}"
+        COMMAND tar -xzf "${PYTHON_PKT}"
         WORKING_DIRECTORY "${PYTHON_INSTL_DIR}"
         RESULT_VARIABLE TAR_RESULT
     )

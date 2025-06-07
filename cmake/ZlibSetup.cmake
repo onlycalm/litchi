@@ -10,7 +10,7 @@ set(ZLIB_INSTL_DIR "${TLCHN_DIR}/zlib")
 
 if(NOT EXISTS "${ZLIB_INSTL_DIR}")
     if(NOT EXISTS "${ZLIB_PKT}")
-        PrintLog(FATAL_ERROR "Python package not found at ${ZLIB_PKT}")
+        PrintLog(FATAL_ERROR "Zlib package not found at ${ZLIB_PKT}")
     endif()
 
     PrintLog(STATUS "Extracting zlib...")
@@ -18,7 +18,7 @@ if(NOT EXISTS "${ZLIB_INSTL_DIR}")
     file(MAKE_DIRECTORY ${ZLIB_INSTL_DIR})
 
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf "${ZLIB_PKT}"
+        COMMAND tar -xzf "${ZLIB_PKT}"
         WORKING_DIRECTORY "${ZLIB_INSTL_DIR}"
         RESULT_VARIABLE TAR_RESULT
     )
