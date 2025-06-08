@@ -28,7 +28,7 @@ if(NOT EXISTS "${QT_INSTL_DIR}")
     )
 
     execute_process(
-        COMMAND bash -c "tar -xvjf ${QT_PKT} -C ${QT_INSTL_DIR}"
+        COMMAND bash -c "tar -xvJf ${QT_PKT} -C ${QT_INSTL_DIR}"
         RESULT_VARIABLE TAR_RESULT
         OUTPUT_QUIET
         ERROR_QUIET

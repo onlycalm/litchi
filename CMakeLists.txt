@@ -36,6 +36,7 @@ set(ZLIB_ROOT "${TLCHN_DIR}/zlib/zlib-1.2.11")
 set(ICU_ROOT "${TLCHN_DIR}/icu/icu-70.1")
 set(PCRE2_ROOT "${TLCHN_DIR}/pcre2/pcre2-10.39")
 set(LIBFFI_ROOT "${TLCHN_DIR}/libffi/libffi-3.4.2")
+set(PKG_CONFIG_ROOT "${TLCHN_DIR}/pkg-config/pkg-config-0.29.2")
 set(CMAKE_TLCHN_ROOT "${TLCHN_DIR}/cmake/cmake-3.22.1")
 set(QT6_ROOT "${TLCHN_DIR}/qt/qt-6.9.0")
 set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
@@ -43,6 +44,7 @@ set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
 set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
 set(Qt6_DIR "${QT6_ROOT}/lib/cmake/Qt6")
 set(Qt6Core_DIR "${QT6_ROOT}/lib/cmake/Qt6Core")
+set(PKG_CONFIG_EXECUTABLE "${PKG_CONFIG_ROOT}/bin/pkg-config")
 set(QT_QMAKE_EXECUTABLE "${QT6_ROOT}/bin/qmake")
 set(QT_MOC_EXECUTABLE "${QT6_ROOT}/libexec/moc")
 set(Python3_EXECUTABLE "${PYTHON_ROOT}/bin/python3.10")
@@ -57,7 +59,7 @@ set(ANALYZE_BUILD_LOG_PY "${SCR_CHORE_PATH}/AnlsBldLog.py")
 set(PRINT_BANNER_PY "${SCR_CHORE_PATH}/PrintBanner.py")
 set(REC_COMPIL_TM_PY "${SCR_CHORE_PATH}/RecCompilTm.py")
 
-list(APPEND CMAKE_PREFIX_PATH "${PCRE2_ROOT}")
+set(ENV{PKG_CONFIG_PATH} "${LIBFFI_ROOT}/lib/pkgconfig:${PKG_CONFIG_ROOT}/lib/pkgconfig:$ENV{PKG_CONFIG_PATH}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 include(Util)
@@ -66,6 +68,7 @@ include(ZlibSetup)
 include(IcuSetup)
 include(Pcre2Setup)
 include(LibffiSetup)
+include(PkgCfgSetup)
 include(CMakeSetup)
 include(QtSetup)
 include(PythonSetup)
@@ -150,16 +153,6 @@ add_custom_target(release
     VERBATIM
 )
 
-if(WIN32)
-    execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
-        OUTPUT_VARIABLE end_time_ms
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-else()
-    execute_process(COMMAND date +%s%3N
-        OUTPUT_VARIABLE end_time_ms
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
-endif()
-
 math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
 math(EXPR seconds "${elapsed_ms} / 1000")
 math(EXPR milliseconds "${elapsed_ms} % 1000")
@@ -174,6 +167,23 @@ file(STRINGS "${PCRE2_ROOT}/include/pcre2.h" PCRE2_MINOR_LINE REGEX "^#define PC
 string(REGEX REPLACE "^#define PCRE2_MINOR +([0-9]+).*$" "\\1" PCRE2_MINOR "${PCRE2_MINOR_LINE}")
 set(PCRE2_VERSION "${PCRE2_MAJOR}.${PCRE2_MINOR}")
 
+execute_process(
+  COMMAND ${PKG_CONFIG_EXECUTABLE} --version
+  OUTPUT_VARIABLE PKGCONFIG_REAL_VERSION
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  ERROR_QUIET
+)
+
+if(WIN32)
+    execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
+        OUTPUT_VARIABLE end_time_ms
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+else()
+    execute_process(COMMAND date +%s%3N
+        OUTPUT_VARIABLE end_time_ms
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+endif()
+
 PrintLog(STATUS "zlib path: ${ZLIB_ROOT}")
 PrintLog(STATUS "zlib version: ${ZLIB_VERSION}")
 PrintLog(STATUS "icu path: ${ICU_ROOT}")
@@ -181,10 +191,13 @@ PrintLog(STATUS "icu version: ${ICU_VERSION}")
 PrintLog(STATUS "pcre2 path ${PCRE2_ROOT}")
 PrintLog(STATUS "pcre2 library: ${PCRE2_LIBRARY}")
 PrintLog(STATUS "pcre2 version: ${PCRE2_VERSION}")
-PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
-PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
 PrintLog(STATUS "libffi path: ${LIBFFI_ROOT}")
 PrintLog(STATUS "libffi version: ${LIBFFI_VERSION}")
+PrintLog(STATUS "pkg-config path: ${PKG_CONFIG_ROOT}")
+PrintLog(STATUS "pkg-config executable path: ${PKG_CONFIG_EXECUTABLE}")
+PrintLog(STATUS "pkg-config version: ${PKGCONFIG_REAL_VERSION}")
+PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
+PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
 PrintLog(STATUS "Qt6 path: ${Qt6_DIR}")
 PrintLog(STATUS "Qt6 core path: ${Qt6Core_DIR}")
 PrintLog(STATUS "Qt6 version: ${Qt6_VERSION}")
