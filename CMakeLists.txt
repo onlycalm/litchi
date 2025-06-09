@@ -38,6 +38,7 @@ set(PCRE2_ROOT "${TLCHN_DIR}/pcre2/pcre2-10.39")
 set(LIBFFI_ROOT "${TLCHN_DIR}/libffi/libffi-3.4.2")
 set(PKG_CONFIG_ROOT "${TLCHN_DIR}/pkg-config/pkg-config-0.29.2")
 set(GLIB2_ROOT "${TLCHN_DIR}/glib/glib-2.72.4")
+set(PNG_ROOT "${TLCHN_DIR}/libpng/libpng-1.6.37")
 set(CMAKE_TLCHN_ROOT "${TLCHN_DIR}/cmake/cmake-3.22.1")
 set(QT6_ROOT "${TLCHN_DIR}/qt/qt-6.9.0")
 set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
@@ -45,6 +46,7 @@ set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
 set(PKG_CONFIG_EXECUTABLE "${PKG_CONFIG_ROOT}/bin/pkg-config")
 set(GLIB2_INCLUDE_DIRS "${GLIB2_ROOT}/include")
 set(GLIB2_LIBRARIES "${GLIB2_ROOT}/lib")
+set(PNG_LIBRARY ${PNG_ROOT}/lib/libpng.so)
 set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
 set(Qt6_DIR "${QT6_ROOT}/lib/cmake/Qt6")
 set(Qt6Core_DIR "${QT6_ROOT}/lib/cmake/Qt6Core")
@@ -75,6 +77,7 @@ include(Pcre2Setup)
 include(LibffiSetup)
 include(PkgCfgSetup)
 include(GlibSetup)
+include(LibpngSetup)
 include(CMakeSetup)
 include(QtSetup)
 include(PythonSetup)
@@ -125,7 +128,6 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Python3 COMPONENTS Interpreter REQUIRED)
 
 pkg_check_modules(LIBFFI REQUIRED libffi)
-pkg_check_modules(GLIB2 REQUIRED glib-2.0)
 
 qt_add_executable(litchi ${SRC_LIST})
 
@@ -160,10 +162,6 @@ add_custom_target(release
     VERBATIM
 )
 
-math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
-math(EXPR seconds "${elapsed_ms} / 1000")
-math(EXPR milliseconds "${elapsed_ms} % 1000")
-
 file(READ "${ZLIB_ROOT}/include/zlib.h" ZLIB_H_CONTENTS)
 string(REGEX MATCH "define ZLIB_VERSION \"[^\"]*\"" ZLIB_VERSION_DEFINE ${ZLIB_H_CONTENTS})
 string(REGEX REPLACE "define ZLIB_VERSION \"([^\"]*)\"" "\\1" ZLIB_VERSION ${ZLIB_VERSION_DEFINE})
@@ -181,6 +179,15 @@ execute_process(
   ERROR_QUIET
 )
 
+find_file(PNG_HEADER png.h PATHS ${PNG_INCLUDE_DIR})
+file(STRINGS ${PNG_HEADER} PNG_VERSION_MAJOR REGEX "^#define PNG_LIBPNG_VER_MAJOR +[0-9]+")
+file(STRINGS ${PNG_HEADER} PNG_VERSION_MINOR REGEX "^#define PNG_LIBPNG_VER_MINOR +[0-9]+")
+file(STRINGS ${PNG_HEADER} PNG_VERSION_RELEASE REGEX "^#define PNG_LIBPNG_VER_RELEASE +[0-9]+")
+string(REGEX REPLACE "^#define PNG_LIBPNG_VER_MAJOR +([0-9]+)" "\\1" PNG_MAJOR ${PNG_VERSION_MAJOR})
+string(REGEX REPLACE "^#define PNG_LIBPNG_VER_MINOR +([0-9]+)" "\\1" PNG_MINOR ${PNG_VERSION_MINOR})
+string(REGEX REPLACE "^#define PNG_LIBPNG_VER_RELEASE +([0-9]+)" "\\1" PNG_RELEASE ${PNG_VERSION_RELEASE})
+set(PNG_VERSION "${PNG_MAJOR}.${PNG_MINOR}.${PNG_RELEASE}")
+
 if(WIN32)
     execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
         OUTPUT_VARIABLE end_time_ms
@@ -190,6 +197,10 @@ else()
         OUTPUT_VARIABLE end_time_ms
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
+
+math(EXPR elapsed_ms "${end_time_ms} - ${start_time_ms}")
+math(EXPR seconds "${elapsed_ms} / 1000")
+math(EXPR milliseconds "${elapsed_ms} % 1000")
 
 PrintLog(STATUS "zlib path: ${ZLIB_ROOT}")
 PrintLog(STATUS "zlib version: ${ZLIB_VERSION}")
@@ -206,7 +217,11 @@ PrintLog(STATUS "pkg-config version: ${PKGCONFIG_REAL_VERSION}")
 PrintLog(STATUS "GLIB2 path: ${GLIB2_ROOT}")
 PrintLog(STATUS "GLIB2_INCLUDE_DIRS: ${GLIB2_INCLUDE_DIRS}")
 PrintLog(STATUS "GLIB2_LIBRARIES: ${GLIB2_LIBRARIES}")
-# PrintLog(STATUS "GLIB2 version: ${GLIB2_VERSION}")
+PrintLog(STATUS "GLIB2 version: ${GLIB2_VERSION}")
+PrintLog(STATUS "libpng path: ${PNG_ROOT}")
+PrintLog(STATUS "libpng lib: ${PNG_LIBRARY}")
+PrintLog(STATUS "libpng include: ${PNG_INCLUDE_DIR}")
+PrintLog(STATUS "libpng version: ${PNG_VERSION}")
 PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
 PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
 PrintLog(STATUS "Qt6 path: ${Qt6_DIR}")
