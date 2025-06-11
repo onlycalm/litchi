@@ -19,6 +19,10 @@ else()
     set(CMAKE_CXX_COMPILER_LAUNCHER "bash" "-c" "echo [$(date '+%Y-%m-%d %H:%M:%S')] && exec $0 $@")
 endif()
 
+# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+# set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,6 +51,9 @@ set(PKG_CONFIG_EXECUTABLE "${PKG_CONFIG_ROOT}/bin/pkg-config")
 set(GLIB2_INCLUDE_DIRS "${GLIB2_ROOT}/include")
 set(GLIB2_LIBRARIES "${GLIB2_ROOT}/lib")
 set(PNG_LIBRARY ${PNG_ROOT}/lib/libpng.so)
+set(CMAKE_FIND_ROOT_PATH ${TLCHN_DIR})
+set(CMAKE_C_COMPILER ${TLCHN_DIR}/bin/gcc)
+set(CMAKE_CXX_COMPILER ${TLCHN_DIR}/bin/g++)
 set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
 set(Qt6_DIR "${QT6_ROOT}/lib/cmake/Qt6")
 set(Qt6Core_DIR "${QT6_ROOT}/lib/cmake/Qt6Core")
@@ -78,6 +85,7 @@ include(LibffiSetup)
 include(PkgCfgSetup)
 include(GlibSetup)
 include(LibpngSetup)
+include(GccSetup)
 include(CMakeSetup)
 include(QtSetup)
 include(PythonSetup)
@@ -188,6 +196,18 @@ string(REGEX REPLACE "^#define PNG_LIBPNG_VER_MINOR +([0-9]+)" "\\1" PNG_MINOR $
 string(REGEX REPLACE "^#define PNG_LIBPNG_VER_RELEASE +([0-9]+)" "\\1" PNG_RELEASE ${PNG_VERSION_RELEASE})
 set(PNG_VERSION "${PNG_MAJOR}.${PNG_MINOR}.${PNG_RELEASE}")
 
+execute_process(
+    COMMAND bash -c "gcc --version | awk 'NR==1 {print $NF}'"
+    OUTPUT_VARIABLE GCC_VERSION_OUTPUT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+    COMMAND bash -c "gcc --version | awk 'NR==1 {print $NF}'"
+    OUTPUT_VARIABLE GXX_VERSION_OUTPUT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 if(WIN32)
     execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
         OUTPUT_VARIABLE end_time_ms
@@ -222,6 +242,10 @@ PrintLog(STATUS "libpng path: ${PNG_ROOT}")
 PrintLog(STATUS "libpng lib: ${PNG_LIBRARY}")
 PrintLog(STATUS "libpng include: ${PNG_INCLUDE_DIR}")
 PrintLog(STATUS "libpng version: ${PNG_VERSION}")
+PrintLog(STATUS "gcc path: ${CMAKE_C_COMPILER}")
+PrintLog(STATUS "gcc version: ${GCC_VERSION_OUTPUT}")
+PrintLog(STATUS "g++ path: ${CMAKE_CXX_COMPILER}")
+PrintLog(STATUS "g++ version: ${GXX_VERSION_OUTPUT}")
 PrintLog(STATUS "CMake path: ${CMAKE_COMMAND}")
 PrintLog(STATUS "CMake version: ${CMAKE_VERSION}")
 PrintLog(STATUS "Qt6 path: ${Qt6_DIR}")
