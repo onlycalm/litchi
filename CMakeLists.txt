@@ -8,22 +8,51 @@ else()
         OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-cmake_minimum_required(VERSION 3.22.1)
-
-set(TLCHN_DIR "${CMAKE_SOURCE_DIR}/tlchn")
-
-set(CORE_UTILS_ROOT "${TLCHN_DIR}/coreutils/coreutils-8.32")
-
-set(CMAKE_UNAME "${CORE_UTILS_ROOT}/bin/uname")
-
-project(litchi VERSION 0.1 LANGUAGES CXX C)
-
 if(CMAKE_VERSION VERSION_GREATER 3.24)
     set(CMAKE_TIMESTAMP_FORMAT "[%Y-%m-%d %H:%M:%S] ")
 else()
     set(CMAKE_C_COMPILER_LAUNCHER   "bash" "-c" "echo [$(date '+%Y-%m-%d %H:%M:%S')] && exec $0 $@")
     set(CMAKE_CXX_COMPILER_LAUNCHER "bash" "-c" "echo [$(date '+%Y-%m-%d %H:%M:%S')] && exec $0 $@")
 endif()
+
+set(TLCHN_DIR "${CMAKE_SOURCE_DIR}/tlchn")
+set(BUILD_LOG "${CMAKE_BINARY_DIR}/build.log")
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+set(CORE_UTILS_ROOT "${TLCHN_DIR}/coreutils/coreutils-8.32")
+set(MAKE_ROOT "${TLCHN_DIR}/make/make-4.3")
+
+set(CMAKE_UNAME "${CORE_UTILS_ROOT}/bin/uname")
+set(MAKE_DIR "${MAKE_ROOT}/bin/make")
+
+set(CMAKE_GENERATOR "Unix Makefiles")
+set(CMAKE_MAKE_PROGRAM "${MAKE_DIR}" CACHE INTERNAL "" FORCE)
+set(__FIND_MAKE_PROGRAM_PATHS "")
+
+set(CMAKE_DISABLE_FIND_PACKAGE_Ninja TRUE)
+set(CMAKE_DISABLE_FIND_PACKAGE_Makefile TRUE)
+
+include(Util)
+include(TlchnSetup)
+include(ZlibSetup)
+include(IcuSetup)
+include(Pcre2Setup)
+include(LibffiSetup)
+include(PkgCfgSetup)
+include(GlibSetup)
+include(LibpngSetup)
+include(LibbacktraceSetup)
+include(MesaSetup)
+include(CoreutilsSetup)
+include(MakeSetup)
+include(GccSetup)
+include(CMakeSetup)
+include(QtSetup)
+include(PythonSetup)
+
+cmake_minimum_required(VERSION 3.22.1)
+
+project(litchi VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_SYSTEM_NAME Linux)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
@@ -64,6 +93,7 @@ set(PKG_CONFIG_EXECUTABLE "${PKG_CONFIG_ROOT}/bin/pkg-config")
 set(GLIB2_INCLUDE_DIRS "${GLIB2_ROOT}/include")
 set(GLIB2_LIBRARIES "${GLIB2_ROOT}/lib")
 set(PNG_LIBRARY "${PNG_ROOT}/lib/libpng.so")
+set(PNG_INCLUDE_DIR "${PNG_ROOT}/include")
 set(Backtrace_INCLUDE_DIR "${BACKTRACE_ROOT}/include/")
 set(Backtrace_LIBRARY "${BACKTRACE_ROOT}/lib/libbacktrace.a")
 set(OPENGL_INCLUDE_DIR "${MESA_ROOT}/include")
@@ -88,7 +118,6 @@ set(Python3_EXECUTABLE "${PYTHON_ROOT}/bin/python3.10")
 set(PYTHON_INCLUDE_DIR "${PYTHON_ROOT}/include/python3.10")
 set(PYTHON_LIBRARY "${PYTHON_ROOT}/lib/libpython3.10.so")
 
-set(BUILD_LOG "${CMAKE_BINARY_DIR}/build.log")
 set(SCR_CHORE_PATH "${CMAKE_SOURCE_DIR}/scr/chore")
 set(ANALYZE_BUILD_LOG_JSON "${CMAKE_BINARY_DIR}/AnlsBldLog.json")
 set(COMPIL_TM_JSON "${CMAKE_BINARY_DIR}/CompilTm.json")
@@ -104,30 +133,12 @@ list(APPEND CMAKE_PREFIX_PATH "${CORE_UTILS_ROOT}/bin")
 list(PREPEND CMAKE_PREFIX_PATH "${TLCHN_DIR}")
 list(APPEND CMAKE_PREFIX_PATH "${PCRE2_ROOT}")
 set(CMAKE_PROGRAM_PATH "${CORE_UTILS_ROOT}/bin")
-# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Core")
-# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Gui")
-# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Widgets")
-# list(APPEND CMAKE_MODULE_PATH "${Qt6_DIR}")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Core")
+list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Gui")
+list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Widgets")
+list(APPEND CMAKE_MODULE_PATH "${Qt6_DIR}")
 
 # include("${QT6_ROOT}/lib/cmake/Qt6Core/Qt6CoreMacros.cmake")
-
-include(Util)
-include(TlchnSetup)
-include(ZlibSetup)
-include(IcuSetup)
-include(Pcre2Setup)
-include(LibffiSetup)
-include(PkgCfgSetup)
-include(GlibSetup)
-include(LibpngSetup)
-include(LibbacktraceSetup)
-include(MesaSetup)
-include(CoreutilsSetup)
-include(GccSetup)
-include(CMakeSetup)
-include(QtSetup)
-include(PythonSetup)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(
@@ -262,6 +273,13 @@ else()
     message(WARNING "uname not found")
 endif()
 
+execute_process(
+    COMMAND ${MAKE_DIR} --version
+    COMMAND head -n 1
+    OUTPUT_VARIABLE MAKE_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 if(WIN32)
     execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
         OUTPUT_VARIABLE end_time_ms
@@ -316,6 +334,8 @@ PrintLog(STATUS "HarfBuzz lib path: ${HarfBuzz_LIBRARY}")
 PrintLog(STATUS "HarfBuzz version: ${HarfBuzz_VERSION}")
 PrintLog(STATUS "uname path: ${CMAKE_UNAME}")
 PrintLog(STATUS "uname version: ${UNAME_VERSION}")
+PrintLog(STATUS "make path: ${MAKE_DIR}")
+PrintLog(STATUS "make version: ${MAKE_VERSION}")
 PrintLog(STATUS "gcc path: ${CMAKE_C_COMPILER}")
 PrintLog(STATUS "gcc version: ${GCC_VERSION_OUTPUT}")
 PrintLog(STATUS "g++ path: ${CMAKE_CXX_COMPILER}")
