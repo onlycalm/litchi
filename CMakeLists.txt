@@ -10,6 +10,12 @@ endif()
 
 cmake_minimum_required(VERSION 3.22.1)
 
+set(TLCHN_DIR "${CMAKE_SOURCE_DIR}/tlchn")
+
+set(CORE_UTILS_ROOT "${TLCHN_DIR}/coreutils/coreutils-8.32")
+
+set(CMAKE_UNAME "${CORE_UTILS_ROOT}/bin/uname")
+
 project(litchi VERSION 0.1 LANGUAGES CXX C)
 
 if(CMAKE_VERSION VERSION_GREATER 3.24)
@@ -20,10 +26,10 @@ else()
 endif()
 
 set(CMAKE_SYSTEM_NAME Linux)
-# set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-# set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-# set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
-# set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,6 +37,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH OFF)
+set(CMAKE_FIND_USE_CMAKE_SYSTEM_PATH OFF)
 set(QT_NO_GLOBAL_CMAKE ON)
 set(QT_NO_DEFAULT_CMAKE ON)
 set(Python3_FIND_REGISTRY NEVER)
@@ -39,7 +46,6 @@ set(CMAKE_FIND_DEBUG_MODE ON)
 set(QT_DEBUG_FIND_PACKAGE ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
-set(TLCHN_DIR "${CMAKE_SOURCE_DIR}/tlchn")
 set(ZLIB_ROOT "${TLCHN_DIR}/zlib/zlib-1.2.11")
 set(ICU_ROOT "${TLCHN_DIR}/icu/icu-70.1")
 set(PCRE2_ROOT "${TLCHN_DIR}/pcre2/pcre2-10.39")
@@ -71,7 +77,6 @@ set(CMAKE_CXX_COMPILER "${TLCHN_DIR}/bin/g++")
 # set(CMAKE_AR "${TLCHN_DIR}/bin/ar")
 # set(CMAKE_RANLIB "${TLCHN_DIR}/bin/ranlib")
 # set(CMAKE_LINKER "${TLCHN_DIR}/bin/ld")
-# set(CMAKE_UNAME "${TLCHN_DIR}/bin/uname")
 set(CMAKE_FIND_ROOT_PATH "${TLCHN_DIR}")
 set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
 set(Qt6_DIR "${QT6_ROOT}/lib/cmake/Qt6")
@@ -95,17 +100,17 @@ set(ENV{PKG_CONFIG_PATH} "${LIBFFI_ROOT}/lib/pkgconfig:${PKG_CONFIG_ROOT}/lib/pk
 
 list(APPEND CMAKE_INSTALL_PREFIX "${TLCHN_DIR}")
 set(CMAKE_PREFIX_PATH "${QT6_ROOT}")
+list(APPEND CMAKE_PREFIX_PATH "${CORE_UTILS_ROOT}/bin")
 list(PREPEND CMAKE_PREFIX_PATH "${TLCHN_DIR}")
-list(PREPEND CMAKE_PROGRAM_PATH "${TLCHN_DIR}/bin")
 list(APPEND CMAKE_PREFIX_PATH "${PCRE2_ROOT}")
-list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Core")
-list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Gui")
-list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Widgets")
-list(APPEND CMAKE_MODULE_PATH "${Qt6_DIR}")
+set(CMAKE_PROGRAM_PATH "${CORE_UTILS_ROOT}/bin")
+# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Core")
+# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Gui")
+# list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Widgets")
+# list(APPEND CMAKE_MODULE_PATH "${Qt6_DIR}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 # include("${QT6_ROOT}/lib/cmake/Qt6Core/Qt6CoreMacros.cmake")
-include("/home/calm/calm/github/litchi/tlchn/qt/qt-6.9.0/lib/cmake/Qt6Core/Qt6CoreMacros.cmake")
 
 include(Util)
 include(TlchnSetup)
@@ -118,6 +123,7 @@ include(GlibSetup)
 include(LibpngSetup)
 include(LibbacktraceSetup)
 include(MesaSetup)
+include(CoreutilsSetup)
 include(GccSetup)
 include(CMakeSetup)
 include(QtSetup)
@@ -241,6 +247,21 @@ execute_process(
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+find_program(CMAKE_UNAME uname)
+if(CMAKE_UNAME)
+    execute_process(
+        COMMAND ${CMAKE_UNAME} --version
+        OUTPUT_VARIABLE UNAME_VERSION_FULL
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    string(REGEX MATCH "uname \\(GNU coreutils\\) ([0-9]+\\.[0-9]+)"
+           VERSION_MATCH "${UNAME_VERSION_FULL}")
+    set(UNAME_VERSION ${CMAKE_MATCH_1})
+else()
+    message(WARNING "uname not found")
+endif()
+
 if(WIN32)
     execute_process(COMMAND powershell -Command "(Get-Date).Ticks / 10000"
         OUTPUT_VARIABLE end_time_ms
@@ -293,6 +314,8 @@ PrintLog(STATUS "EGL version: ${EGL_VERSION}")
 PrintLog(STATUS "HarfBuzz include path: ${HarfBuzz_INCLUDE_DIR}")
 PrintLog(STATUS "HarfBuzz lib path: ${HarfBuzz_LIBRARY}")
 PrintLog(STATUS "HarfBuzz version: ${HarfBuzz_VERSION}")
+PrintLog(STATUS "uname path: ${CMAKE_UNAME}")
+PrintLog(STATUS "uname version: ${UNAME_VERSION}")
 PrintLog(STATUS "gcc path: ${CMAKE_C_COMPILER}")
 PrintLog(STATUS "gcc version: ${GCC_VERSION_OUTPUT}")
 PrintLog(STATUS "g++ path: ${CMAKE_CXX_COMPILER}")
