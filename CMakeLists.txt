@@ -21,9 +21,16 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CORE_UTILS_ROOT "${TLCHN_DIR}/coreutils/coreutils-8.32")
 set(MAKE_ROOT "${TLCHN_DIR}/make/make-4.3")
+set(GCC_ROOT "${TLCHN_DIR}/gcc/gcc-11.4.0")
+set(CMAKE_FIND_ROOT_PATH "${TLCHN_DIR}")
+set(CMAKE_DIR "${TLCHN_DIR}/cmake/cmake-3.22.1")
 
 set(CMAKE_UNAME "${CORE_UTILS_ROOT}/bin/uname")
 set(MAKE_DIR "${MAKE_ROOT}/bin/make")
+set(CMAKE_ROOT "${CMAKE_DIR}/share/cmake-3.22")
+set(CMAKE_C_COMPILER "${GCC_ROOT}/bin/x86_64-linux-gnu-gcc")
+set(CMAKE_CXX_COMPILER "${GCC_ROOT}/bin/x86_64-linux-gnu-g++")
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_ROOT}/Modules")
 
 set(CMAKE_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKE_PROGRAM "${MAKE_DIR}" CACHE INTERNAL "" FORCE)
@@ -84,7 +91,6 @@ set(GLIB2_ROOT "${TLCHN_DIR}/glib/glib-2.72.4")
 set(PNG_ROOT "${TLCHN_DIR}/libpng/libpng-1.6.37")
 set(BACKTRACE_ROOT "${TLCHN_DIR}/libbacktrace/libbacktrace-1.0")
 set(MESA_ROOT "${TLCHN_DIR}/mesa/mesa-23.2.1")
-set(CMAKE_TLCHN_ROOT "${TLCHN_DIR}/cmake/cmake-3.22.1")
 set(QT6_ROOT "${TLCHN_DIR}/qt/qt-6.9.0")
 set(PYTHON_ROOT "${TLCHN_DIR}/python/python-3.10.12")
 
@@ -102,13 +108,10 @@ set(OPENGL_glx_LIBRARY "${MESA_ROOT}/lib/libGLX.so")
 set(OPENGL_glu_LIBRARY "${MESA_ROOT}/lib/libGLU.so")
 set(EGL_INCLUDE_DIR "${MESA_ROOT}/include")
 set(EGL_LIBRARY "${MESA_ROOT}/lib/libEGL.so")
-set(CMAKE_C_COMPILER "${TLCHN_DIR}/bin/gcc")
-set(CMAKE_CXX_COMPILER "${TLCHN_DIR}/bin/g++")
 # set(CMAKE_AR "${TLCHN_DIR}/bin/ar")
 # set(CMAKE_RANLIB "${TLCHN_DIR}/bin/ranlib")
 # set(CMAKE_LINKER "${TLCHN_DIR}/bin/ld")
-set(CMAKE_FIND_ROOT_PATH "${TLCHN_DIR}")
-set(CMAKE_COMMAND "${CMAKE_TLCHN_ROOT}/bin/cmake")
+set(CMAKE_COMMAND "${CMAKE_DIR}/bin/cmake")
 set(Qt6_DIR "${QT6_ROOT}/lib/cmake/Qt6")
 set(Qt6Core_DIR "${QT6_ROOT}/lib/cmake/Qt6Core")
 set(Qt6Widgets_DIR "${QT6_ROOT}/lib/cmake/Qt6Widgets")
@@ -177,7 +180,7 @@ set(SRC_LIST
 )
 
 find_program(PROJECT_CMAKE cmake
-  PATHS "${CMAKE_TLCHN_ROOT}/bin"
+  PATHS "${CMAKE_DIR}/bin"
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
