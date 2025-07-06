@@ -110,7 +110,6 @@ set(Python3_FIND_STRATEGY LOCATION)
 set(CMAKE_FIND_DEBUG_MODE ON)
 set(QT_DEBUG_FIND_PACKAGE ON)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11")
 set(ZLIB_ROOT "${TLCHN_DIR}/zlib/zlib-1.2.11")
 set(ICU_ROOT "${TLCHN_DIR}/icu/icu-70.1")
 set(PCRE2_ROOT "${TLCHN_DIR}/pcre2/pcre2-10.39")
@@ -167,8 +166,6 @@ list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Gui")
 list(APPEND CMAKE_MODULE_PATH "${QT6_ROOT}/lib/cmake/Qt6Widgets")
 list(APPEND CMAKE_MODULE_PATH "${Qt6_DIR}")
 
-# include("${QT6_ROOT}/lib/cmake/Qt6Core/Qt6CoreMacros.cmake")
-
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     add_compile_options(
         -Wall
@@ -189,6 +186,7 @@ include_directories(
     ./src/log
     ./src/drv/tcp
     ./src/win
+    ./build/autogen/include
 )
 
 aux_source_directory(./src SRC_SOURCES)
