@@ -32,6 +32,5 @@ private:
 
     void vidConnBtnClk(void);
     void vidSndBtnClk(void);
-    void vidEcuTstBtnClk(void);
 };
 #endif // WIN_MAIN_H

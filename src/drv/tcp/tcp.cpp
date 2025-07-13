@@ -26,8 +26,8 @@ clTcpSer::clTcpSer(void)
     LogTr("Enter clTcpSer::clTcpSer function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    u16SrcPt = htons(12345);
-    u16TgtPt = htons(12346);
+    u16SrcPt = htons(8080);
+    u16TgtPt = htons(8080);
     u32SrcIpAdr = 0x0100007Fu; /* 127.0.0.1 */
     u32TgtIpAdr = 0x0100007Fu; /* 127.0.0.1 */
     s16SrcSktId = -1;
@@ -150,11 +150,11 @@ err clTcpSer::erLsn(void)
 
         tSrcAdr.sin_family = u8AdrFm;
         tSrcAdr.sin_addr.s_addr = u32SrcIpAdr;
-        tSrcAdr.sin_port = u16SrcPt;
+        tSrcAdr.sin_port = htons(u16SrcPt);
 
         LogInf("tSrcAdr.sin_family = %d", tSrcAdr.sin_family);
         LogInf("tSrcAdr.sin_addr.s_addr = 0x%08X", tSrcAdr.sin_addr.s_addr);
-        LogInf("tSrcAdr.sin_port = %d", tSrcAdr.sin_port);
+        LogInf("tSrcAdr.sin_port = %X", tSrcAdr.sin_port);
 
         // Bind tcp socket.
         if(bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
@@ -215,9 +215,17 @@ err clTcpSer::erDisc(void)
 
     err erRtn = EC_NOK;
 
-    shutdown(s16SrcSktId, SHUT_RDWR);
-    close(s16SrcSktId);
-    erRtn = EC_OK;
+    if(s16SrcSktId >= 0)
+    {
+        shutdown(s16SrcSktId, SHUT_RDWR);
+        close(s16SrcSktId);
+        erRtn = EC_OK;
+    }
+    else
+    {
+        LogWrn("Socket already closed or invalid.");
+        erRtn = EC_NOK;
+    }
 
     LogTr("Exit clTcpSer::erDisc function.");
 
@@ -337,8 +345,8 @@ clTcpClt::clTcpClt(void)
     LogTr("Enter clTcpClt::clTcpClt function.");
 
     u8AdrFm = AF_INET; // IPV4.
-    u16SrcPt = htons(12346);
-    u16TgtPt = htons(12345);
+    u16SrcPt = htons(0);
+    u16TgtPt = htons(8080);
     u32SrcIpAdr = 0x0100007Fu; /* 127.0.0.1 */
     u32TgtIpAdr = 0x0100007Fu; /* 127.0.0.1 */
     s16SrcSktId = -1;
@@ -479,7 +487,7 @@ err clTcpClt::erConn(void)
 
         tSrcAdr.sin_family = u8AdrFm;
         tSrcAdr.sin_addr.s_addr = u32SrcIpAdr;
-        tSrcAdr.sin_port = u16SrcPt;
+        tSrcAdr.sin_port = htons(u16SrcPt);
 
         if(bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
         {
@@ -502,7 +510,7 @@ err clTcpClt::erConn(void)
 
         tTgtAdr.sin_family = u8AdrFm;
         tTgtAdr.sin_addr.s_addr = u32SrcIpAdr;
-        tTgtAdr.sin_port = u16TgtPt;
+        tTgtAdr.sin_port = htons(u16TgtPt);
 
         if(connect(s16SrcSktId, (struct sockaddr*)&tTgtAdr, sizeof(tTgtAdr)) >= 0)
         {
@@ -528,9 +536,17 @@ err clTcpClt::erDisc(void)
 
     err erRtn = EC_NOK;
 
-    shutdown(s16SrcSktId, SHUT_RDWR);
-    close(s16SrcSktId);
-    erRtn = EC_OK;
+    if(s16SrcSktId >= 0)
+    {
+        shutdown(s16SrcSktId, SHUT_RDWR);
+        close(s16SrcSktId);
+        erRtn = EC_OK;
+    }
+    else
+    {
+        LogWrn("Socket already closed or invalid.");
+        erRtn = EC_NOK;
+    }
 
     LogTr("Exit clTcpClt::erDisc function.");
 
@@ -543,12 +559,13 @@ err clTcpClt::erSnd(u8* pu8Buf, u32 u32Sz)
 
     err erRtn = EC_NOK;
 
+    LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
+    LogInf("Send size: %d", u32Sz);
+
     if((pu8Buf != NULL) &&
        (u32Sz > 0u) &&
        (bIsConn() == true))
     {
-        LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
-
         send(s16SrcSktId, pu8Buf, u32Sz, 0);
         LogScs("TCP successfully sent.");
         erRtn = EC_OK;
