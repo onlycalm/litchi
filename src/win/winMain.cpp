@@ -50,10 +50,6 @@ void winMain::vidInitConn(void)
             this,
             &winMain::vidConnBtnClk);
     connect(ui->pshBtnSnd, &QPushButton::clicked, this, &winMain::vidSndBtnClk);
-    connect(ui->pshBtnEcuTst,
-            &QPushButton::clicked,
-            this,
-            &winMain::vidEcuTstBtnClk);
 
     LogTr("Exit winMain::vidInitConn function.");
 }
@@ -124,7 +120,7 @@ void winMain::vidConnBtnClk(void)
     {
         LogTr("Requst disconnect tcp.");
 
-        // cDoipClt.erDisc();
+        cTcpClt.erDisc();
 
         ui->pshBtnConn->setText("Connect");
         ui->pshBtnConn->setStyleSheet("background-color: green;");
@@ -141,23 +137,18 @@ void winMain::vidSndBtnClk(void)
 {
     LogTr("Enter winMain::vidSndBtnClk function.");
 
-    // if(cDoipClt.erReqDiag() == EC_OK)
-    // {
-    //     LogScs("DOIP successfully sent.");
-    // }
-    // else
-    // {
-    //     LogErr("DOIP has failed to send.");
-    // }
+    std::string strSndMsg = ui->plainTextEdit->toPlainText().toStdString();
+
+    if(cTcpClt.erSnd((u8*)strSndMsg.c_str(), strSndMsg.length()) == EC_OK)
+    {
+        LogScs("Tcp successfully sent.");
+    }
+    else
+    {
+        LogErr("Tcp has failed to send.");
+    }
 
     LogTr("Exit winMain::vidSndBtnClk function.");
-}
-
-void winMain::vidEcuTstBtnClk(void)
-{
-    LogTr("Enter winMain::vidEcuTstBtnClk function.");
-
-    LogTr("Exit winMain::vidEcuTstBtnClk function.");
 }
 
 #endif // WIN_MAIN_H
