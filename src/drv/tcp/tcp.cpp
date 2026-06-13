@@ -127,13 +127,26 @@ err clTcpSer::erLsn(void)
 {
     LogTr("Enter clTcpSer::erLsn function.");
 
+    err erRtn = erLsnSetup();
+    if (erRtn == EC_OK)
+        erRtn = erAccept();
+
+    LogTr("Exit clTcpSer::erLsn function.");
+
+    return erRtn;
+}
+
+err clTcpSer::erLsnSetup(void)
+{
+    LogTr("Enter clTcpSer::erLsnSetup function.");
+
     err erRtn = EC_OK;
 
     // Create tcp socket.
     s16SrcSktId = socket(AF_INET, SOCK_STREAM, 0);
     LogInf("s16SrcSktId = %d", s16SrcSktId);
 
-    if(s16SrcSktId > 0)
+    if (s16SrcSktId > 0)
     {
         LogScs("Successfully created server TCP socket.");
     }
@@ -143,8 +156,11 @@ err clTcpSer::erLsn(void)
         LogErr("Failed to create server TCP socket.");
     }
 
-    if(erRtn == EC_OK)
+    if (erRtn == EC_OK)
     {
+        int opt = 1;
+        setsockopt(s16SrcSktId, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+
         // Config IP address.
         struct sockaddr_in tSrcAdr = {0};
 
@@ -157,56 +173,75 @@ err clTcpSer::erLsn(void)
         LogInf("tSrcAdr.sin_port = %X", tSrcAdr.sin_port);
 
         // Bind tcp socket.
-        if(bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
+        if (bind(s16SrcSktId, (struct sockaddr*)&tSrcAdr, sizeof(tSrcAdr)) >= 0)
         {
             LogScs("Successfully bind server TCP socket.");
         }
         else
         {
             close(s16SrcSktId);
+            s16SrcSktId = -1;
             erRtn = EC_NOK;
             LogErr("Failed to bind server TCP socket.");
         }
     }
 
-    if(erRtn == EC_OK)
+    if (erRtn == EC_OK)
     {
         // Listen tcp socket.
-        if(listen(s16SrcSktId, 1) >= 0)
+        if (listen(s16SrcSktId, 1) >= 0)
         {
             LogScs("Successfully listen server TCP socket.");
         }
         else
         {
             close(s16SrcSktId);
+            s16SrcSktId = -1;
             erRtn = EC_NOK;
             LogErr("Failed to listen server TCP socket.");
         }
     }
 
-    if(erRtn == EC_OK)
-    {
-        // Accept connect.
-        struct sockaddr_in tTgtAdr = {0};
-        socklen_t u32SktLen = sizeof(tTgtAdr);
-
-        s16TgtSktId = accept(s16SrcSktId, (struct sockaddr*)&tTgtAdr, &u32SktLen);
-
-        if(s16TgtSktId >= 0)
-        {
-            LogScs("Successfully received socket connection.");
-        }
-        else
-        {
-            close(s16SrcSktId);
-            erRtn = EC_NOK;
-            LogErr("Failed to receive socket connection.");
-        }
-    }
-
-    LogTr("Exit clTcpSer::erLsn function.");
+    LogTr("Exit clTcpSer::erLsnSetup function.");
 
     return erRtn;
+}
+
+err clTcpSer::erAccept(void)
+{
+    LogTr("Enter clTcpSer::erAccept function.");
+
+    err erRtn = EC_OK;
+
+    // Accept connect.
+    struct sockaddr_in tTgtAdr = {0};
+    socklen_t u32SktLen = sizeof(tTgtAdr);
+
+    s16TgtSktId = accept(s16SrcSktId, (struct sockaddr*)&tTgtAdr, &u32SktLen);
+
+    if (s16TgtSktId >= 0)
+    {
+        LogScs("Successfully accepted client connection.");
+    }
+    else
+    {
+        erRtn = EC_NOK;
+        LogTr("Accept interrupted (listening socket closed).");
+    }
+
+    LogTr("Exit clTcpSer::erAccept function.");
+
+    return erRtn;
+}
+
+void clTcpSer::vidCloseTgt(void)
+{
+    if (s16TgtSktId >= 0)
+    {
+        shutdown(s16TgtSktId, SHUT_RDWR);
+        close(s16TgtSktId);
+        s16TgtSktId = -1;
+    }
 }
 
 err clTcpSer::erDisc(void)
@@ -215,13 +250,24 @@ err clTcpSer::erDisc(void)
 
     err erRtn = EC_NOK;
 
-    if(s16SrcSktId >= 0)
+    // Close the accepted client socket if present.
+    if (s16TgtSktId >= 0)
+    {
+        shutdown(s16TgtSktId, SHUT_RDWR);
+        close(s16TgtSktId);
+        s16TgtSktId = -1;
+        erRtn = EC_OK;
+    }
+
+    // Close the listening socket.
+    if (s16SrcSktId >= 0)
     {
         shutdown(s16SrcSktId, SHUT_RDWR);
         close(s16SrcSktId);
+        s16SrcSktId = -1;
         erRtn = EC_OK;
     }
-    else
+    else if (s16TgtSktId < 0)
     {
         LogWrn("Socket already closed or invalid.");
         erRtn = EC_NOK;
@@ -244,9 +290,23 @@ err clTcpSer::erSnd(u8* pu8Buf, u32 u32Sz)
     {
         LogInf("Send data: 0x%s", HexToStr(pu8Buf, u32Sz).c_str());
 
-        send(s16TgtSktId, pu8Buf, u32Sz, 0);
-        LogScs("TCP successfully sent.");
-        erRtn = EC_OK;
+        // MSG_DONTWAIT — safe to call from UI thread.
+        ssize_t s64SndRst = send(s16TgtSktId, pu8Buf, u32Sz, MSG_DONTWAIT);
+        if (s64SndRst >= 0)
+        {
+            LogScs("TCP successfully sent.");
+            erRtn = EC_OK;
+        }
+        else if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            LogWrn("TCP send would block — buffer full.");
+            erRtn = EC_NOK;
+        }
+        else
+        {
+            LogErr("TCP send failed (errno=%d).", errno);
+            erRtn = EC_NOK;
+        }
     }
     else
     {
@@ -324,15 +384,32 @@ bool clTcpSer::bIsConn(void)
     bool bConn = false;
     u8 au8Buf[1] = {0};
 
-    ssize_t s64RecvRst = recv(s16TgtSktId, au8Buf, 1, static_cast<int>(enTcpBlkMd::Pv));
+    // Non-blocking peek — must not block (called from UI thread via erSnd).
+    ssize_t s64RecvRst = recv(s16TgtSktId, au8Buf, 1,
+                              static_cast<int>(enTcpBlkMd::Pv) |
+                              static_cast<int>(enTcpBlkMd::NonBlk));
 
-    if(s64RecvRst != 0)
+    if (s64RecvRst > 0)
     {
         bConn = true;
     }
+    else if (s64RecvRst == 0)
+    {
+        LogTr("Peer disconnected.");
+        bConn = false;
+    }
     else
     {
-        bConn = false;
+        if ((errno == ENOTCONN) || (errno == EBADF))
+        {
+            LogTr("Not connected.");
+            bConn = false;
+        }
+        else
+        {
+            // EAGAIN / EWOULDBLOCK — no data to peek, but still connected.
+            bConn = true;
+        }
     }
 
     LogTr("Exit clTcpSer::bIsConn function.");
@@ -566,9 +643,23 @@ err clTcpClt::erSnd(u8* pu8Buf, u32 u32Sz)
        (u32Sz > 0u) &&
        (bIsConn() == true))
     {
-        send(s16SrcSktId, pu8Buf, u32Sz, 0);
-        LogScs("TCP successfully sent.");
-        erRtn = EC_OK;
+        // MSG_DONTWAIT — safe to call from UI thread.
+        ssize_t s64SndRst = send(s16SrcSktId, pu8Buf, u32Sz, MSG_DONTWAIT);
+        if (s64SndRst >= 0)
+        {
+            LogScs("TCP successfully sent.");
+            erRtn = EC_OK;
+        }
+        else if (errno == EAGAIN || errno == EWOULDBLOCK)
+        {
+            LogWrn("TCP send would block — buffer full.");
+            erRtn = EC_NOK;
+        }
+        else
+        {
+            LogErr("TCP send failed (errno=%d).", errno);
+            erRtn = EC_NOK;
+        }
     }
     else
     {

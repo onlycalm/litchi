@@ -24,6 +24,9 @@ public:
     err erSetNetParm(u32 u32SrcIpAdr, u32 u32TgtIpAdr, u16 u16SrcPt);
     enTcpBlkMd eGetBlkMd(void);
     err erLsn(void);
+    err erLsnSetup(void);   // socket → bind → listen
+    err erAccept(void);     // accept one connection (blocks)
+    void vidCloseTgt(void); // close accepted socket only
     err erDisc(void);
     err erSnd(u8* pu8Buf, u32 u32Sz);
     err erRecv(u8* pu8Buf, u32* u32Sz);
